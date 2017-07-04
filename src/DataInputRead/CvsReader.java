@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package factorialanalysis;
+package DataInputRead;
 
 import java.io.*;
 import java.util.*;
@@ -48,6 +48,21 @@ public class CvsReader {
             for(int row=0;row<cvsData.size();row++){   
                 String[] line = cvsData.get(row);
                 elements[row][colIndexValue] = Double.parseDouble(line[newColumnIndex]);
+            }
+            newColumnIndex++;
+        }
+        
+        return elements;
+    }
+    
+    public String[][] getStrDataAt(int[] colIndex){
+        String[][] elements = new String[(cvsData.size())][colIndex.length];
+        
+        int newColumnIndex = 0;
+        for(int colIndexValue: colIndex){
+            for(int row=0;row<cvsData.size();row++){   
+                String[] line = cvsData.get(row);
+                elements[row][colIndexValue] = line[newColumnIndex];
             }
             newColumnIndex++;
         }
