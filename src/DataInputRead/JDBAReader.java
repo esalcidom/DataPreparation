@@ -9,6 +9,7 @@ package DataInputRead;
 import java.sql.*;
 import java.math.*;
 import javafx.beans.binding.StringBinding;
+import javax.swing.table.*;
 /**
  *
  * @author Emmanuel
@@ -24,6 +25,8 @@ public class JDBAReader {
     private String dbName = null;
     private String hostname = null;
     private ResultSet queryResult = null;
+    private DefaultTableModel dataSet;
+    private ResultSetMetaData metaQueryResult;
     
     JDBAReader(){
         
@@ -34,6 +37,8 @@ public class JDBAReader {
         try{
             stmt = connection.createStatement();
             this.queryResult = stmt.executeQuery(query);
+            this.metaQueryResult = queryResult.getMetaData();
+            
         }
         catch(SQLException se){
             System.out.println("JDBAReader|Stmt|SQLException: " + se.getMessage());
@@ -95,7 +100,6 @@ public class JDBAReader {
             System.out.println("Error: Unable to instantiate driver");
         }*/
     }
-    
     
     
     public void setRdbms(String rdbms){
