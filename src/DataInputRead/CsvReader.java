@@ -6,6 +6,7 @@
 package DataInputRead;
 
 import com.opencsv.*;
+import java.io.*;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,15 +18,27 @@ public class CsvReader {
     
     private CSVReader reader;
     private String[] columnHeader;
+    private int columnSize;
     
-    public void readCsv(String path){        
+    public CsvReader(String path){
+        try{
+            reader = new CSVReader(new FileReader(path), ',');
+        }
+        catch(Exception e){
+            System.out.println("[CsvReader]: " + e.getMessage());
+        }
+    }
+    
+    public void readCsv(){        
         String[] nextLine;
         if(reader != null){
             try{
                 List<String[]> dataTable = reader.readAll();
-                if(hasHeaders(dataTable)){
+                columnSize = dataTable.get(0).length;
+                if(hasHeaders(dataTable))
                     setListHeader(dataTable);
-                }
+                else
+                    setDefaultHeader();
             }
             catch(Exception e){
                 System.out.println("[CsvReader]: " + e.getMessage());
@@ -60,6 +73,7 @@ public class CsvReader {
     
     private void setDefaultHeader(){
         String colName = "Column";
+        columnHeader = new String[columnSize];
         for(int i=0;i<columnHeader.length;i++){
             columnHeader[i] = colName + i;
         }
