@@ -72,7 +72,7 @@ public class CsvReader {
     }
     
     private void setDefaultHeader(){
-        String colName = "Column";
+        String colName = "Column ";
         columnHeader = new String[columnSize];
         for(int i=0;i<columnHeader.length;i++){
             columnHeader[i] = colName + i;

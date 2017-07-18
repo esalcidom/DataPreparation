@@ -26,7 +26,9 @@ public class JDBAReader {
     private String hostname = null;
     private ResultSet queryResult = null;
     private DefaultTableModel dataSet;
-    private ResultSetMetaData metaQueryResult;
+    
+    private int colSize = 0;
+    private String[] header;
     
     JDBAReader(){
         
@@ -37,7 +39,9 @@ public class JDBAReader {
         try{
             stmt = connection.createStatement();
             this.queryResult = stmt.executeQuery(query);
-            this.metaQueryResult = queryResult.getMetaData();
+            ResultSetMetaData metaQueryResult = queryResult.getMetaData();
+            colSize = metaQueryResult.getColumnCount();
+            setHeader(metaQueryResult);
             
         }
         catch(SQLException se){
@@ -99,6 +103,18 @@ public class JDBAReader {
         catch(InstantiationException ie){
             System.out.println("Error: Unable to instantiate driver");
         }*/
+    }
+    
+    private void setHeader(ResultSetMetaData metaData){
+        header = new String[colSize];
+        for(int i = 1; i< colSize; i++){
+            try{
+                header[i] = metaData.getColumnName(i);
+            }
+            catch(SQLException sqle){
+                System.out.println("[JDBA] DB access error occurs.");
+            }
+        }
     }
     
     
