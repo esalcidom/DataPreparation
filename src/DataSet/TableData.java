@@ -3,7 +3,7 @@
  * Also to create DataDef objects I think how to map them.  
  */
 package DataSet;
-import com.mockrunner.mock.jdbc.*;
+import com.mockrunner.mock.jdbc.MockResultSet;
 import java.sql.*;
 import java.util.*;
 /**
@@ -13,10 +13,11 @@ import java.util.*;
 public class TableData {
     
     private ResultSet dataSet;
+    private HashMap<String,DataDef> defMap;
     
-    public void setDataSetFromCSV(String[] header, List<String[]> data) throws Exception{
+    public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{
         if(header != null && data!= null){
-            if(header.length == data.size())
+            if(header.length == dataColumnSize)
             {
                 MockResultSet mockResultSet = new MockResultSet("DataSet");
                 for(String head : header){
@@ -38,6 +39,15 @@ public class TableData {
     
     public void setDataSetFromDB(ResultSet data){
         dataSet = data;
+    }
+    
+    private void generateDefVar(String name){
+        if(!defMap.containsKey(name)){
+            DataDef dataDef = new DataDef();
+            ///process of identification
+            
+            defMap.put(name, dataDef);
+        }
     }
     
 }

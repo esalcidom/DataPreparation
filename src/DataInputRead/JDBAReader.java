@@ -45,17 +45,17 @@ public class JDBAReader {
             
         }
         catch(SQLException se){
-            System.out.println("JDBAReader|Stmt|SQLException: " + se.getMessage());
+            System.out.println("JDBAReader | Stmt | SQLException | " + se.getMessage());
         }
         catch(Exception e){
-            System.out.println("JDBAReader|Stmt|Exception: " + e.getMessage());
+            System.out.println("JDBAReader| Stmt | Exception | " + e.getMessage());
         }
         finally{
             try{ 
                 stmt.close();
             }
             catch(SQLException se){
-                System.out.println("JDBAReader|Stmt|SQLException: " + se.getMessage());
+                System.out.println("JDBAReader | Stmt | SQLException | " + se.getMessage());
             }
         }
     }
@@ -65,7 +65,7 @@ public class JDBAReader {
             this.connection = DriverManager.getConnection(url.toString(), user, pass);
         }
         catch(SQLException se){
-            System.out.println("Error: " + se.getMessage());
+            System.out.println("JDBAReader | Conn | SQLException | " + se.getMessage());
         }
     }
     
@@ -112,7 +112,7 @@ public class JDBAReader {
                 header[i] = metaData.getColumnName(i);
             }
             catch(SQLException sqle){
-                System.out.println("[JDBA] DB access error occurs.");
+                System.out.println("JDBA | SetHeader | SQLException | " + sqle.getMessage());
             }
         }
     }
@@ -180,7 +180,7 @@ public class JDBAReader {
          this.connection.close();   
         }
         catch(SQLException se){
-            System.out.println("Error: " + se.getMessage());
+            System.out.println("JDBA | CloseDB | SQLException | " + se.getMessage());
         }
     }
 }

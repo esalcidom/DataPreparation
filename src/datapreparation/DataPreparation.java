@@ -5,6 +5,7 @@
  */
 package datapreparation;
 import DataInputRead.*;
+import DataSet.*;
 /**
  *
  * @author Emmanuel
@@ -19,6 +20,14 @@ public class DataPreparation {
         String path = "C:\\Users\\Emmanuel\\Documents\\Maestria\\CSVSamples\\farm_gdl_cp.csv";
         CsvReader reader = new CsvReader(path);
         reader.readCsv();
+        TableData table = new TableData();
+        try{
+            table.setDataSetFromCSV(reader.getColumnHeader(),reader.getDataTable(), reader.getColumnSize());
+        }
+        catch(Exception e){
+            System.out.println("Main | SQLException | " + e.getMessage());
+        }
+        
         
     }
     

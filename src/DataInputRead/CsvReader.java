@@ -19,6 +19,7 @@ public class CsvReader {
     private CSVReader reader;
     private String[] columnHeader;
     private int columnSize;
+    private List<String[]> dataTable;
     
     public CsvReader(String path){
         try{
@@ -33,29 +34,29 @@ public class CsvReader {
         String[] nextLine;
         if(reader != null){
             try{
-                List<String[]> dataTable = reader.readAll();
-                columnSize = dataTable.get(0).length;
-                if(hasHeaders(dataTable))
-                    setListHeader(dataTable);
+                setDataTable(reader.readAll());
+                setColumnSize(getDataTable().get(0).length);
+                if(hasHeaders(getDataTable()))
+                    setListHeader(getDataTable());
                 else
                     setDefaultHeader();
             }
             catch(Exception e){
-                System.out.println("[CsvReader]: " + e.getMessage());
+                System.out.println("CsvReader | Read | Exception | " + e.getMessage());
             }
             finally{
                 try{
                     reader.close();
                 }
                 catch(Exception e){
-                System.out.println("[CsvReader]: " + e.getMessage());
+                System.out.println("CsvReader | Read | Exception | " + e.getMessage());
                 }
             }
         }
     }
     
     private void setListHeader(List<String[]> table){
-        columnHeader = table.get(0);
+        setColumnHeader(table.get(0));
         table.remove(0);
     }
     
@@ -73,10 +74,52 @@ public class CsvReader {
     
     private void setDefaultHeader(){
         String colName = "Column ";
-        columnHeader = new String[columnSize];
-        for(int i=0;i<columnHeader.length;i++){
-            columnHeader[i] = colName + i;
+        setColumnHeader(new String[getColumnSize()]);
+        for(int i=0;i<getColumnHeader().length;i++){
+            getColumnHeader()[i] = colName + i;
         }
+    }
+
+    /**
+     * @return the dataTable
+     */
+    public List<String[]> getDataTable() {
+        return dataTable;
+    }
+
+    /**
+     * @param dataTable the dataTable to set
+     */
+    public void setDataTable(List<String[]> dataTable) {
+        this.dataTable = dataTable;
+    }
+
+    /**
+     * @return the columnHeader
+     */
+    public String[] getColumnHeader() {
+        return columnHeader;
+    }
+
+    /**
+     * @param columnHeader the columnHeader to set
+     */
+    public void setColumnHeader(String[] columnHeader) {
+        this.columnHeader = columnHeader;
+    }
+
+    /**
+     * @return the columnSize
+     */
+    public int getColumnSize() {
+        return columnSize;
+    }
+
+    /**
+     * @param columnSize the columnSize to set
+     */
+    public void setColumnSize(int columnSize) {
+        this.columnSize = columnSize;
     }
     
 }
