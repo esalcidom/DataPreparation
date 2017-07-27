@@ -23,7 +23,7 @@ public class DataPreparation {
         TableData table = new TableData();
         try{
             table.setDataSetFromCSV(reader.getColumnHeader(),reader.getDataTable(), reader.getColumnSize());
-            
+            table.generateAllDefVar();
         }
         catch(Exception e){
             System.out.println("Main | SQLException | " + e.getMessage());

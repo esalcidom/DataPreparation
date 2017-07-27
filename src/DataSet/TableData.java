@@ -55,15 +55,36 @@ public class TableData {
         }
     }*/
     
-    public void generateAllDefVAr(){
+    public void generateAllDefVar(){
         //Automated Def all variables
+        String s;
         DataDef def;
         StatOperator op;
-        for(int i=0; i<colSize; i++){
-            def = new DataDef();
-            op = new StatOperator(dataSet.getColumn(i));
-            def.setMean(op.calMean());
+        StringBuilder colName;
+        try{
+            for(int i=1;i<colSize;i++){
+                def = new DataDef();
+                colName = new StringBuilder(dataSet.getMetaData().getColumnName(i));
+                //Need to check if at the moment to load the column now we calculate summary or first identify variable and need to do all the flow code in this method?
+                op = new StatOperator(dataSet.getColumn(colName.toString()));
+                def.setMean(op.calMean());
+                //Las demas operaciones para definir en DataDef
+                //
+                //
+                //Mapear Def con Variable
+                defMap.put(colName.toString(), def);
+            }
+            
         }
+        catch(SQLException sqle){
+            System.out.println("TableData | SQLException | generateAllDefVar | " + sqle.getMessage());
+        }
+        
+        
+            
+            
+         
+        
         
     }
     
