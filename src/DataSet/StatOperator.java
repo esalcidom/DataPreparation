@@ -27,7 +27,34 @@ public class StatOperator {
     }
     
     public double calMean(){
-        return summary.getMean();
+        return getSummary().getMean();
     }
     
+    /**
+     * @return the varData
+     */
+    public List<String> getVarData() {
+        return varData;
+    }
+
+    /**
+     * @param aVarData the varData to set
+     */
+    public void setVarData(List<String> aVarData) {
+        varData = aVarData;
+    }
+
+    /**
+     * @return the summary
+     */
+    public SummaryStatistics getSummary() {
+        return summary;
+    }
+
+    /**
+     * @param aSummary the summary to set
+     */
+    public void setSummary(SummaryStatistics aSummary) {
+        summary = aSummary;
+    }
 }

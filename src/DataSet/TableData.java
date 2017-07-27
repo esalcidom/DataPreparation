@@ -12,12 +12,14 @@ import java.util.*;
  */
 public class TableData {
     
-    private ResultSet dataSet;
+    private MockResultSet dataSet;
     private HashMap<String,DataDef> defMap;
+    private int colSize = 0;
     
     public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{
         if(header != null && data!= null){
-            if(header.length == dataColumnSize)
+            colSize = dataColumnSize;
+            if(header.length == colSize)
             {
                 MockResultSet mockResultSet = new MockResultSet("DataSet");
                 for(String head : header){
@@ -37,17 +39,32 @@ public class TableData {
         }
     }
     
-    public void setDataSetFromDB(ResultSet data){
+    public void setDataSetFromDB(MockResultSet data){
         dataSet = data;
     }
     
-    private void generateDefVar(String name){
+    /*
+    public void generateDefVar(String name){
         if(!defMap.containsKey(name)){
             DataDef dataDef = new DataDef();
             ///process of identification
+            //Intervalo de confianza
+            //
             
             defMap.put(name, dataDef);
         }
+    }*/
+    
+    public void generateAllDefVAr(){
+        //Automated Def all variables
+        DataDef def;
+        StatOperator op;
+        for(int i=0; i<colSize; i++){
+            def = new DataDef();
+            op = new StatOperator(dataSet.getColumn(i));
+            def.setMean(op.calMean());
+        }
+        
     }
     
 }
