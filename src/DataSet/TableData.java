@@ -43,49 +43,39 @@ public class TableData {
         dataSet = data;
     }
     
-    /*
-    public void generateDefVar(String name){
-        if(!defMap.containsKey(name)){
-            DataDef dataDef = new DataDef();
-            ///process of identification
-            //Intervalo de confianza
-            //
-            
-            defMap.put(name, dataDef);
-        }
-    }*/
-    
-    public void generateAllDefVar(){
+    public void cleanDefOp(){
         //Automated Def all variables
-        String s;
-        DataDef def;
-        StatOperator op;
         StringBuilder colName;
+        List columnData;
+        List columnResult;
         try{
             for(int i=1;i<colSize;i++){
-                def = new DataDef();
                 colName = new StringBuilder(dataSet.getMetaData().getColumnName(i));
-                //Need to check if at the moment to load the column now we calculate summary or first identify variable and need to do all the flow code in this method?
-                op = new StatOperator(dataSet.getColumn(colName.toString()));
-                def.setMean(op.calMean());
-                //Las demas operaciones para definir en DataDef
-                //
-                //
-                //Mapear Def con Variable
-                defMap.put(colName.toString(), def);
+                columnData = dataSet.getColumn(colName.toString());
+                columnResult = cleanVariable(columnData);
             }
-            
         }
         catch(SQLException sqle){
             System.out.println("TableData | SQLException | generateAllDefVar | " + sqle.getMessage());
         }
-        
-        
-            
-            
-         
-        
-        
+    }
+    
+    private List cleanVariable(List data){
+        DefOperator op = new DefOperator();
+        //Need to clean the list string one by one
+        for(int i=0;i<data.size();i++){
+            data.set(i, op.cleanString(data.get(i).toString()));
+        }
+        return data;
+    }
+    
+    private void defineVariables(){
+        StatOperator op;
+        DataDef def;
+        //Need to start the summary
+        //Mapear Def con Variable
+        //defMap.put(colName.toString(), def);
+
     }
     
 }
