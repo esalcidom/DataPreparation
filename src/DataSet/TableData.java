@@ -43,7 +43,7 @@ public class TableData {
         dataSet = data;
     }
     
-    public void cleanDefOp(){
+    public void cleanDistinctOp(){
         //Automated Def all variables
         StringBuilder colName;
         List columnData;

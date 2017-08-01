@@ -33,7 +33,7 @@ public class DataPreparation {
         DefOperator defOp;
         try{
             table.setDataSetFromCSV(reader.getColumnHeader(),reader.getDataTable(), reader.getColumnSize());
-            table.cleanDefOp();
+            table.cleanDistinctOp();
             //table.generateAllDefVar();
         }
         catch(Exception e){
