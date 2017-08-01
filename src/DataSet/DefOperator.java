@@ -6,6 +6,7 @@
 package DataSet;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -24,6 +25,10 @@ public class DefOperator {
     
     public DefOperator(){
         
+    }
+    
+    public List<String> getDistinctValues(List<String> values){
+        return values.stream().distinct().collect(Collectors.toList());
     }
     
     public void defType(){

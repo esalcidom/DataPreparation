@@ -14,6 +14,7 @@ import java.util.*;
 public class DataDef {
     
     private StringBuilder name;
+    private List<String> variableData;
     private List<VariableType> varType;
     private boolean isNumeric;    
     private double mean;
@@ -28,8 +29,8 @@ public class DataDef {
     private double rangeQuartile;
     private double variance;
     private double kurtosis;
-    private Map<StringBuilder,Integer> distValues;
-    private short emptyValues;
+    private Map<String,Integer> distValues;
+    private List<String> distHead;
 
     /**
      * @return the name
@@ -216,21 +217,44 @@ public class DataDef {
     /**
      * @return the distValues
      */
-    public Map<StringBuilder,Integer> getDistValues() {
+    public Map<String,Integer> getDistValues() {
         return distValues;
     }
 
     /**
-     * @return the emptyValues
+     * @return the variableData
      */
-    public short getEmptyValues() {
-        return emptyValues;
+    public List<String> getVariableData() {
+        return variableData;
     }
 
     /**
-     * @param emptyValues the emptyValues to set
+     * @param variableData the variableData to set
      */
-    public void setEmptyValues(short emptyValues) {
-        this.emptyValues = emptyValues;
+    public void setVariableData(List<String> variableData) {
+        this.variableData = variableData;
     }
+
+    /**
+     * @param distValues the distValues to set
+     */
+    public void setDistValues(Map<String,Integer> distValues) {
+        this.distValues = distValues;
+    }
+
+    /**
+     * @return the distHead
+     */
+    public List<String> getDistHead() {
+        return distHead;
+    }
+
+    /**
+     * @param distHead the distHead to set
+     */
+    public void setDistHead(List<String> distHead) {
+        this.distHead = distHead;
+    }
+
+    
 }

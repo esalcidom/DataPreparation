@@ -26,6 +26,10 @@ public class StatOperator {
         }
     }
     
+    public StatOperator(){
+        
+    }
+    
     public double calMean(){
         return getSummary().getMean();
     }

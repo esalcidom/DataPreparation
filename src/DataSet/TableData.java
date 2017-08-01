@@ -47,12 +47,23 @@ public class TableData {
         //Automated Def all variables
         StringBuilder colName;
         List columnData;
-        List columnResult;
+        List<String> columnResult;
+        List<String> distinctValues;
+        Map<String,Integer> distinctCount;
+        DataDef def;
+        
         try{
             for(int i=1;i<colSize;i++){
+                def = new DataDef();
                 colName = new StringBuilder(dataSet.getMetaData().getColumnName(i));
                 columnData = dataSet.getColumn(colName.toString());
                 columnResult = cleanVariable(columnData);
+                distinctValues = distVariables(columnResult);
+                distinctCount = countDistVariables(distinctValues,columnResult);
+                def.setName(colName);
+                def.setVariableData(columnResult);
+                def.setDistHead(distinctValues);
+                def.setDistValues(distinctCount);
             }
         }
         catch(SQLException sqle){
@@ -60,7 +71,11 @@ public class TableData {
         }
     }
     
-    private List cleanVariable(List data){
+    //Mapear Def con Variable
+        //defMap.put(colName.toString(), def);
+    
+    
+    private List<String> cleanVariable(List data){
         DefOperator op = new DefOperator();
         //Need to clean the list string one by one
         for(int i=0;i<data.size();i++){
@@ -69,13 +84,17 @@ public class TableData {
         return data;
     }
     
-    private void defineVariables(){
-        StatOperator op;
-        DataDef def;
-        //Need to start the summary
-        //Mapear Def con Variable
-        //defMap.put(colName.toString(), def);
-
+    private List<String> distVariables(List<String> data){
+        DefOperator op = new DefOperator();
+        return op.getDistinctValues(data);
+    }
+    
+    private HashMap<String,Integer> countDistVariables(List<String> dist, List<String> data){
+        HashMap<String,Integer> countMap = new HashMap<String,Integer>();
+        for(String distValue : dist){
+            countMap.put(distValue, Collections.frequency(data, distValue));
+        }
+        return countMap;
     }
     
 }
