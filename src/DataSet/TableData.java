@@ -15,6 +15,11 @@ public class TableData {
     private MockResultSet dataSet;
     private HashMap<String,DataDef> defMap;
     private int colSize = 0;
+    //Need to think if DefOperator should be here or not
+    
+    public TableData(){
+        defMap = new HashMap<String,DataDef>();
+    }
     
     public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{
         if(header != null && data!= null){
@@ -43,7 +48,7 @@ public class TableData {
         dataSet = data;
     }
     
-    public void cleanDistinctOp(){
+    public void definitionOp(){
         //Automated Def all variables
         StringBuilder colName;
         List columnData;
@@ -64,6 +69,8 @@ public class TableData {
                 def.setVariableData(columnResult);
                 def.setDistHead(distinctValues);
                 def.setDistValues(distinctCount);
+                def.setPopulation(columnResult.size());
+                defMap.put(def.getName().toString(),def);
             }
         }
         catch(SQLException sqle){
@@ -95,6 +102,14 @@ public class TableData {
             countMap.put(distValue, Collections.frequency(data, distValue));
         }
         return countMap;
+    }
+    
+    public HashMap<String, DataDef> getDefMap(){
+        return defMap;
+    }
+    
+    public List getDataColumn(String name){
+        return dataSet.getColumn(name);
     }
     
 }

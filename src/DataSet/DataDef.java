@@ -31,7 +31,13 @@ public class DataDef {
     private double kurtosis;
     private Map<String,Integer> distValues;
     private List<String> distHead;
-
+    private int population;
+    private boolean isEnable;
+    
+    
+    public DataDef(){
+        isEnable = true;
+    }
     /**
      * @return the name
      */
@@ -254,6 +260,34 @@ public class DataDef {
      */
     public void setDistHead(List<String> distHead) {
         this.distHead = distHead;
+    }
+
+    /**
+     * @return the population
+     */
+    public int getPopulation() {
+        return population;
+    }
+
+    /**
+     * @param population the population to set
+     */
+    public void setPopulation(int population) {
+        this.population = population;
+    }
+
+    /**
+     * @return the isEnable
+     */
+    public boolean getIsEnable() {
+        return isEnable;
+    }
+
+    /**
+     * @param isEnable the isEnable to set
+     */
+    public void setIsEnable(boolean isEnable) {
+        this.isEnable = isEnable;
     }
 
     

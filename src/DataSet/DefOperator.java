@@ -65,4 +65,60 @@ public class DefOperator {
         this.varData = varData;
     }
     
+    public ArrayList<Integer> validateVariables(TableData table){
+        int totalPopulation = 0;
+        int totalVariables = 0;
+        ArrayList<Integer> totals = new ArrayList<Integer>(2);
+        HashMap<String,DataDef> tableDefMap = table.getDefMap();
+        //get every data def to check the diff values
+        for(Map.Entry<String,DataDef> entry : tableDefMap.entrySet()){
+            DataDef definition = entry.getValue();
+            if(isMonotinic(definition)){
+                    definition.setIsEnable(false);
+            }
+            else{
+                ///////is necesary to also store de population of the variable in DataDef.
+                totalPopulation += definition.getPopulation();
+                totalVariables++;
+            }
+            ///Now we diseabled the variables with no use and now need to check if the amount of population is a good one
+        }	
+        totals.add(totalVariables);
+        totals.add(totalPopulation);
+        return totals;
+    }
+    
+    //for the moment will work in here for the 
+    public boolean isMonotinic(DataDef variableDef){
+        if(variableDef.getDistValues().size()==1)
+            return true;
+        else
+            return false;
+    }
+    
+    //This method need to be called after validateVariables to check which variables are enabled
+    public void validateDataSet(TableData table){
+        boolean validation = isPopulationEnough(validateVariables(table));
+        if(validation){
+            ///Continue with the preparation
+        }
+        else{
+            //Send message to user that this data set is incomplete and need to get more information for proper analisys
+        }
+    }
+
+    public boolean isPopulationEnough(ArrayList<Integer> totals){
+        int totalPopulation = totals.get(1);
+        int totalVariables = totals.get(0);
+        if(totalPopulation / totalVariables >= 150){
+            return true;
+        }
+        else{
+            if(totalPopulation >= 250){
+                return true;
+            }
+            return false;
+        }
+    }
+    
 }
