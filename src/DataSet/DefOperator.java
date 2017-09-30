@@ -16,11 +16,11 @@ import org.apache.commons.lang3.math.NumberUtils;
  */
 public class DefOperator {
     
-    private List<String> varData;
-    private List<VariableType> varType;
+    //private List<String> varData;
+    //private List<VariableType> varType;
     
     public DefOperator(List data){
-        this.varData = data;
+        //this.varData = data;
     }
     
     public DefOperator(){
@@ -53,39 +53,52 @@ public class DefOperator {
 
     /**
      * @return the varData
-     */
+     
     public List<String> getVarData() {
         return varData;
     }
 
     /**
      * @param varData the varData to set
-     */
+     
     public void setVarData(List<String> varData) {
         this.varData = varData;
     }
+    * 
+    */
     
-    public ArrayList<Integer> validateVariables(TableData table){
-        int totalPopulation = 0;
-        int totalVariables = 0;
-        ArrayList<Integer> totals = new ArrayList<Integer>(2);
-        HashMap<String,DataDef> tableDefMap = table.getDefMap();
-        //get every data def to check the diff values
-        for(Map.Entry<String,DataDef> entry : tableDefMap.entrySet()){
-            DataDef definition = entry.getValue();
-            if(isMonotinic(definition)){
-                    definition.setIsEnable(false);
-            }
-            else{
-                ///////is necesary to also store de population of the variable in DataDef.
-                totalPopulation += definition.getPopulation();
-                totalVariables++;
-            }
-            ///Now we diseabled the variables with no use and now need to check if the amount of population is a good one
-        }	
-        totals.add(totalVariables);
-        totals.add(totalPopulation);
-        return totals;
+    private List<String> combineHeadValues(String newKey, List<String> head, List<String> list){
+        
+        for(String listValue: list){
+            head.remove(listValue);
+        }
+        head.add(newKey);
+        return head;
+    }
+
+    private Map<String,Integer> combineDistValues(String newKey, Map<String,Integer> map,List<String> list){
+
+        int totalCount = 0;
+        for(String listValue : list){
+            totalCount += map.get(listValue);
+            map.remove(listValue);
+        }
+        map.put(newKey, totalCount);
+
+        return map;
+    }
+
+    public void combineVariableValues(DataDef variableDef, String newKey, List<String> listValues){
+
+        //If we replace all the listValues detections for all the newKey values then we can 
+        List<String> distHead = variableDef.getDistHead();
+        Map distValues = variableDef.getDistValues();
+        variableDef.setDistHead(combineHeadValues(newKey, distHead, listValues));
+        variableDef.setDistValues(combineDistValues(newKey, distValues, listValues));
+    }
+    
+    public void disableVariable(){
+        
     }
     
     //for the moment will work in here for the 
@@ -94,17 +107,6 @@ public class DefOperator {
             return true;
         else
             return false;
-    }
-    
-    //This method need to be called after validateVariables to check which variables are enabled
-    public void validateDataSet(TableData table){
-        boolean validation = isPopulationEnough(validateVariables(table));
-        if(validation){
-            ///Continue with the preparation
-        }
-        else{
-            //Send message to user that this data set is incomplete and need to get more information for proper analisys
-        }
     }
 
     public boolean isPopulationEnough(ArrayList<Integer> totals){

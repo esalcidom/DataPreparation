@@ -15,10 +15,11 @@ public class TableData {
     private MockResultSet dataSet;
     private HashMap<String,DataDef> defMap;
     private int colSize = 0;
-    //Need to think if DefOperator should be here or not
+    private DefOperator defOperator;
     
     public TableData(){
         defMap = new HashMap<String,DataDef>();
+        defOperator = new DefOperator();
     }
     
     public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{
@@ -50,6 +51,8 @@ public class TableData {
     
     public void definitionOp(){
         //Automated Def all variables
+        //Set for every column the name, data (without special chars), list of distinct values and count, and the population
+        //Then map with key as name of column and DataDef object is created with Table
         StringBuilder colName;
         List columnData;
         List<String> columnResult;
@@ -66,7 +69,6 @@ public class TableData {
                 distinctValues = distVariables(columnResult);
                 distinctCount = countDistVariables(distinctValues,columnResult);
                 def.setName(colName);
-                def.setVariableData(columnResult);
                 def.setDistHead(distinctValues);
                 def.setDistValues(distinctCount);
                 def.setPopulation(columnResult.size());
@@ -78,22 +80,34 @@ public class TableData {
         }
     }
     
-    //Mapear Def con Variable
-        //defMap.put(colName.toString(), def);
+    public void validateMonoVariables(TableData table){
+        //iterate for all variables and check if a variable is monotonic and disable the one that are.
+        //get every data def to check the diff values
+        for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
+            DataDef definition = entry.getValue();
+            if(defOperator.isMonotinic(definition)){
+                    definition.setIsEnable(false);
+                    defMap.replace(entry.getKey(), definition);
+            }
+        }	
+    }
     
+    //Combine two or more diff values of variable into one
+    //NOTE...the input of variable, diff values and new tag of the value is still missing
+    public void combineVariableValues(String variable, String newKey, List<String> listValues){
+        DataDef variableCol = defMap.get(variable);
+        defOperator.combineVariableValues(variableCol, newKey, listValues);
+    }
     
     private List<String> cleanVariable(List data){
-        DefOperator op = new DefOperator();
-        //Need to clean the list string one by one
         for(int i=0;i<data.size();i++){
-            data.set(i, op.cleanString(data.get(i).toString()));
+            data.set(i, defOperator.cleanString(data.get(i).toString()));
         }
         return data;
     }
     
     private List<String> distVariables(List<String> data){
-        DefOperator op = new DefOperator();
-        return op.getDistinctValues(data);
+        return defOperator.getDistinctValues(data);
     }
     
     private HashMap<String,Integer> countDistVariables(List<String> dist, List<String> data){

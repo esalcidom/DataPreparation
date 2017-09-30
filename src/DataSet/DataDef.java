@@ -14,7 +14,7 @@ import java.util.*;
 public class DataDef {
     
     private StringBuilder name;
-    private List<String> variableData;
+    //private List<String> variableData; delete the whole store of values of column, that is why we have the table
     private List<VariableType> varType;
     private boolean isNumeric;    
     private double mean;
@@ -30,7 +30,7 @@ public class DataDef {
     private double variance;
     private double kurtosis;
     private Map<String,Integer> distValues;
-    private List<String> distHead;
+    private List<String> distHead; //Need to check if it's necessary this distinc values'
     private int population;
     private boolean isEnable;
     
@@ -229,17 +229,18 @@ public class DataDef {
 
     /**
      * @return the variableData
-     */
+     
     public List<String> getVariableData() {
         return variableData;
     }
 
-    /**
-     * @param variableData the variableData to set
-     */
+    
     public void setVariableData(List<String> variableData) {
         this.variableData = variableData;
     }
+    * 
+    * 
+    */
 
     /**
      * @param distValues the distValues to set
