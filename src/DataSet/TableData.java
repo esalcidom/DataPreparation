@@ -23,6 +23,7 @@ public class TableData {
     }
     
     public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{
+        //Read from the csv file to table
         if(header != null && data!= null){
             colSize = dataColumnSize;
             if(header.length == colSize)
@@ -97,6 +98,18 @@ public class TableData {
     public void combineVariableValues(String variable, String newKey, List<String> listValues){
         DataDef variableCol = defMap.get(variable);
         defOperator.combineVariableValues(variableCol, newKey, listValues);
+        
+    }
+    
+    public boolean isDataEnough(){
+        int enableCol = 0;
+        int population = dataSet.getRowCount();
+        for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
+            if(entry.getValue().getIsEnable()){
+                enableCol++;
+            }
+        }
+        return defOperator.isPopulationEnough(population, enableCol);
     }
     
     private List<String> cleanVariable(List data){

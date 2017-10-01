@@ -109,9 +109,8 @@ public class DefOperator {
             return false;
     }
 
-    public boolean isPopulationEnough(ArrayList<Integer> totals){
-        int totalPopulation = totals.get(1);
-        int totalVariables = totals.get(0);
+    public boolean isPopulationEnough(int totalPopulation, int totalVariables){
+        
         if(totalPopulation / totalVariables >= 150){
             return true;
         }
