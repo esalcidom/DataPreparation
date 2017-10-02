@@ -35,6 +35,69 @@ public class DefOperator {
         
     }
     
+    public void defineVariableSubType(DataDef data){
+        Random random = new Random();
+        List<String> listSearch = new ArrayList<String>();
+        while(listSearch.size()<10){
+            String element = data.getDistHead().get(random.nextInt(data.getDistHead().size())); 
+            if(element.equals("") || element.equals(" "))
+                continue;
+            listSearch.add(element);
+        }
+        data.setVarSubType(defineAlpha(listSearch));
+        if(data.getVarSubType()==VariableSubType.NONE)
+            data.setVarSubType(defineAlphaNumeric(listSearch));
+        if(data.getVarSubType()==VariableSubType.NONE || data.getVarSubType()==VariableSubType.ALPHANUMERIC)
+            data.setVarSubType(defineNumeric(listSearch));
+    }
+                
+    private VariableSubType defineAlpha(List<String> list){
+        for(int i =0;i<list.size();i++){
+            if(isAlpha(list.get(i))){
+                if(i==list.size()-1){
+                    return VariableSubType.ALPHA;
+                }
+                else
+                    continue;
+            }
+            else{
+                return VariableSubType.NONE;
+            }            
+        }
+        return VariableSubType.NONE;
+    }
+    
+    private VariableSubType defineAlphaNumeric(List<String> list){
+        for(int i =0;i<list.size();i++){
+            if(isAlphanum(list.get(i))){
+                if(i==list.size()-1){
+                    return VariableSubType.ALPHANUMERIC;
+                }
+                else
+                    continue;
+            }
+            else{
+                return VariableSubType.NONE;
+            }            
+        }
+        return VariableSubType.NONE;
+    }
+    
+    private VariableSubType defineNumeric(List<String> list){
+        for(int i =0;i<list.size();i++){
+            if(isNumeric(list.get(i)) || isDouble(list.get(i))){
+                if(i==list.size()-1){
+                    return VariableSubType.NUMERIC;
+                }
+                else
+                    continue;
+            }
+            else
+                return VariableSubType.ALPHANUMERIC;
+        }
+        return VariableSubType.ALPHANUMERIC;
+    }
+    
     private boolean isAlpha(String value){
         return StringUtils.isAlphaSpace(value);
     }
@@ -43,8 +106,17 @@ public class DefOperator {
         return StringUtils.isAlphanumericSpace(value);
     }
     
-    private boolean isBlank(String value){
-        return StringUtils.isBlank(value);
+    private boolean isNumeric(String value){
+        return StringUtils.isNumeric(value);  
+    }
+    
+    private boolean isDouble(String value){
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
     
     public String cleanString(String value){
@@ -104,6 +176,22 @@ public class DefOperator {
     //for the moment will work in here for the 
     public boolean isMonotinic(DataDef variableDef){
         if(variableDef.getDistValues().size()==1)
+            return true;
+        else
+            return false;
+    }
+    
+    public boolean isManyMissing(DataDef variableDef){
+        int totalMissing = 0;
+        
+        if(variableDef.getDistValues().containsKey("")){
+            totalMissing += variableDef.getDistValues().get("");
+        }
+        if(variableDef.getDistValues().containsKey(" ")){
+            totalMissing += variableDef.getDistValues().get(" ");
+        }
+        
+        if(totalMissing >= (variableDef.getPopulation() * 0.15))
             return true;
         else
             return false;

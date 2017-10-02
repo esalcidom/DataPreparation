@@ -23,7 +23,7 @@ public class DataPreparation {
         * @param args the command line arguments
         *
         * PROCESS TO DEFINE AND VALIDATE
-        * * 1. Define the data set by definitOp method which only gets the name, values and distinct elements of columns
+        * * 1. Define the data set by definitOp method which only gets the name, values and distinct elements of columns, sub type
         * 1.5 User need to define if the distinct values found are correct NOTE...The method to combine values works now is needed the input from user
         * * 2. Define if the data set is enough to do the investigation.
         * 3. Handle null, empty or wrong data and if necessary identify the rows that should be deleted.
@@ -42,6 +42,8 @@ public class DataPreparation {
         try{
             table.setDataSetFromCSV(reader.getColumnHeader(),reader.getDataTable(), reader.getColumnSize());
             table.definitionOp();
+            table.validateMonoNullVariables();
+            table.isDataEnough();
             //defOp.isPopulationEnough(defOp.validateVariables(table));
             //If user wants to combine two or more distinct values for a specific variable.
             //Then what we need is the selected variable and the diff values to combine.

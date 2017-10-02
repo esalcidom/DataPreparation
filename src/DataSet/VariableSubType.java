@@ -9,6 +9,6 @@ package DataSet;
  *
  * @author Emmanuel
  */
-public enum VariableType {
-    CATEGORICAL, CONTINUOUS, BINARY, NOMINAL, ORDINAL, INTERVAL, RATIO, NONE
+public enum VariableSubType {
+    ALPHA, ALPHANUMERIC, NUMERIC, NONE
 }

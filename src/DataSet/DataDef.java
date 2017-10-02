@@ -16,7 +16,7 @@ public class DataDef {
     private StringBuilder name;
     //private List<String> variableData; delete the whole store of values of column, that is why we have the table
     private List<VariableType> varType;
-    private boolean isNumeric;    
+    private VariableSubType varSubType; //variable sub type refers if the variable is numeric, alpha or alphanumeric
     private double mean;
     private double median;
     private double skewness;
@@ -37,6 +37,7 @@ public class DataDef {
     
     public DataDef(){
         isEnable = true;
+        varSubType = VariableSubType.NONE;
     }
     /**
      * @return the name
@@ -289,6 +290,20 @@ public class DataDef {
      */
     public void setIsEnable(boolean isEnable) {
         this.isEnable = isEnable;
+    }
+
+    /**
+     * @return the varSubType
+     */
+    public VariableSubType getVarSubType() {
+        return varSubType;
+    }
+
+    /**
+     * @param varSubType the varSubType to set
+     */
+    public void setVarSubType(VariableSubType varSubType) {
+        this.varSubType = varSubType;
     }
 
     

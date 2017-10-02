@@ -73,6 +73,7 @@ public class TableData {
                 def.setDistHead(distinctValues);
                 def.setDistValues(distinctCount);
                 def.setPopulation(columnResult.size());
+                defOperator.defineVariableSubType(def);
                 defMap.put(def.getName().toString(),def);
             }
         }
@@ -81,14 +82,18 @@ public class TableData {
         }
     }
     
-    public void validateMonoVariables(TableData table){
+    public void validateMonoNullVariables(){
         //iterate for all variables and check if a variable is monotonic and disable the one that are.
         //get every data def to check the diff values
         for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
             DataDef definition = entry.getValue();
             if(defOperator.isMonotinic(definition)){
-                    definition.setIsEnable(false);
-                    defMap.replace(entry.getKey(), definition);
+                definition.setIsEnable(false);
+                defMap.replace(entry.getKey(), definition);
+            }
+            if(defOperator.isManyMissing(definition)){
+                definition.setIsEnable(false);
+                defMap.replace(entry.getKey(), definition);
             }
         }	
     }
