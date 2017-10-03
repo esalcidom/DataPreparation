@@ -123,21 +123,15 @@ public class DefOperator {
         return value.replaceAll("[^a-zA-Z0-9áÁíÍúÚéÉóÓñÑ\\s]", "").trim();
     }
 
-    /**
-     * @return the varData
-     
-    public List<String> getVarData() {
-        return varData;
+    public void remapAlphaToNumeric(DataDef data){
+        //As name says this remaps the values to only index base. NOTE THE IMPLEMENTATION IS MISSING IN TABLE CLASS
+        HashMap<String,Integer> toNumeric = new HashMap<String,Integer>();
+        int headSize = data.getDistHead().size();
+        for(int i=0;i<headSize;i++){
+            toNumeric.put(data.getDistHead().get(i), i++);
+        }
+        
     }
-
-    /**
-     * @param varData the varData to set
-     
-    public void setVarData(List<String> varData) {
-        this.varData = varData;
-    }
-    * 
-    */
     
     private List<String> combineHeadValues(String newKey, List<String> head, List<String> list){
         
@@ -167,10 +161,6 @@ public class DefOperator {
         Map distValues = variableDef.getDistValues();
         variableDef.setDistHead(combineHeadValues(newKey, distHead, listValues));
         variableDef.setDistValues(combineDistValues(newKey, distValues, listValues));
-    }
-    
-    public void disableVariable(){
-        
     }
     
     //for the moment will work in here for the 

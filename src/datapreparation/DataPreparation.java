@@ -31,7 +31,9 @@ public class DataPreparation {
         * 4. Define one more time if the data set is enough to do the investigation.
         * 4. Define the types of variables for future statistical analisis
         * 4.5 User need to define if the columns types are define correclty.
-        * 5. Generate Statistic Summary for each variable
+        * 5. Converting Text Variables to Numerical variables. assign a Remap value
+        * 6. Generate Statistic Summary for each variable
+        * 7. 
         */
         
         String path = "C:\\Users\\Emmanuel\\Documents\\Maestria\\CSVSamples\\farm_gdl_cp.csv";

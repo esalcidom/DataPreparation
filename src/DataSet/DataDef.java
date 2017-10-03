@@ -33,6 +33,7 @@ public class DataDef {
     private List<String> distHead; //Need to check if it's necessary this distinc values'
     private int population;
     private boolean isEnable;
+    private Map<String,Integer> remapValues; //This characteristic can hold a remap values for the variable holding the same key string as distValues and the other value. NOTE THE REMAP IS FOR ALPHA TO NUMERIC
     
     
     public DataDef(){
