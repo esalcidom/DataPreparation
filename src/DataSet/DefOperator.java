@@ -181,7 +181,7 @@ public class DefOperator {
             totalMissing += variableDef.getDistValues().get(" ");
         }
         
-        if(totalMissing >= (variableDef.getPopulation() * 0.15))
+        if(totalMissing >= (variableDef.getPopulation() * 0.1))
             return true;
         else
             return false;

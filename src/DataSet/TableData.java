@@ -20,6 +20,7 @@ public class TableData {
     public TableData(){
         defMap = new HashMap<String,DataDef>();
         defOperator = new DefOperator();
+        
     }
     
     public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{
@@ -29,13 +30,14 @@ public class TableData {
             if(header.length == colSize)
             {
                 MockResultSet mockResultSet = new MockResultSet("DataSet");
+                boolean f = mockResultSet.isClosed();
                 for(String head : header){
                     mockResultSet.addColumn(head);
                 }
                 for(String[] row : data){
                     mockResultSet.addRow(row);
                 }
-                dataSet = mockResultSet;
+                setDataSet(mockResultSet);
             }
             else{
                 throw new Exception("[TableData] Header and data columns are not the same size.");
@@ -47,7 +49,7 @@ public class TableData {
     }
     
     public void setDataSetFromDB(MockResultSet data){
-        dataSet = data;
+        setDataSet(data);
     }
     
     public void definitionOp(){
@@ -64,9 +66,10 @@ public class TableData {
         try{
             for(int i=1;i<colSize;i++){
                 def = new DataDef();
-                colName = new StringBuilder(dataSet.getMetaData().getColumnName(i));
-                columnData = dataSet.getColumn(colName.toString());
+                colName = new StringBuilder(getDataSet().getMetaData().getColumnName(i));
+                columnData = getDataSet().getColumn(colName.toString());
                 columnResult = cleanVariable(columnData);
+                updateColumnValue(colName,columnResult);
                 distinctValues = distVariables(columnResult);
                 distinctCount = countDistVariables(distinctValues,columnResult);
                 def.setName(colName);
@@ -74,7 +77,7 @@ public class TableData {
                 def.setDistValues(distinctCount);
                 def.setPopulation(columnResult.size());
                 defOperator.defineVariableSubType(def);
-                defMap.put(def.getName().toString(),def);
+                getDefMap().put(def.getName().toString(),def);
             }
         }
         catch(SQLException sqle){
@@ -82,34 +85,75 @@ public class TableData {
         }
     }
     
+    private void updateColumnValue(StringBuilder colName, List<String> newColValues){
+        int listIndex = 0;
+        try{
+            if(!this.dataSet.isFirst())
+                this.dataSet.first();
+            do{
+                this.dataSet.updateString(colName.toString(), newColValues.get(listIndex));
+                this.dataSet.updateRow();
+                listIndex++;
+            }
+            while(this.dataSet.next());
+            this.dataSet.first();
+        }
+        catch(SQLException sqle){
+            System.out.println("TableData | SQLException | updateColumnValue | " + sqle.getMessage());
+        }
+        
+    }
+    
     public void validateMonoNullVariables(){
         //iterate for all variables and check if a variable is monotonic and disable the one that are.
         //get every data def to check the diff values
-        for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
+        for(Map.Entry<String, DataDef> entry : getDefMap().entrySet()){
             DataDef definition = entry.getValue();
             if(defOperator.isMonotinic(definition)){
                 definition.setIsEnable(false);
-                defMap.replace(entry.getKey(), definition);
+                getDefMap().replace(entry.getKey(), definition);
             }
             if(defOperator.isManyMissing(definition)){
                 definition.setIsEnable(false);
-                defMap.replace(entry.getKey(), definition);
+                getDefMap().replace(entry.getKey(), definition);
             }
         }	
     }
     
-    //Combine two or more diff values of variable into one
+    //Combine two or more diff values of variable into one. The list of values is the one with the old values to update with the newKey
     //NOTE...the input of variable, diff values and new tag of the value is still missing
     public void combineVariableValues(String variable, String newKey, List<String> listValues){
-        DataDef variableCol = defMap.get(variable);
+        DataDef variableCol = getDefMap().get(variable);
         defOperator.combineVariableValues(variableCol, newKey, listValues);
+        updateColumnCombinedValues(variableCol.getName().toString(), newKey, listValues);
         
+    }
+    
+    //This method search for the list of new values in the data set table and if found then update the table with the new value
+    //NOTE...the input of variable, diff values and new tag of the value is still missing
+    private void updateColumnCombinedValues(String colName, String newValue, List<String> listNewValues){
+        try{
+            if(!this.dataSet.isFirst())
+                this.dataSet.first();
+            do{
+                for(String value : listNewValues){
+                    if(value.equals(this.dataSet.getString(colName))){
+                        this.dataSet.updateString(colName.toString(), newValue);
+                        this.dataSet.updateRow();
+                    }
+                }
+            }
+            while(this.dataSet.next());
+        }
+        catch(SQLException sqle){
+            System.out.println("TableData | SQLException | updateColumnCombinedValues | " + sqle.getMessage());
+        }
     }
     
     public boolean isDataEnough(){
         int enableCol = 0;
-        int population = dataSet.getRowCount();
-        for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
+        int population = getDataSet().getRowCount();
+        for(Map.Entry<String, DataDef> entry : getDefMap().entrySet()){
             if(entry.getValue().getIsEnable()){
                 enableCol++;
             }
@@ -141,7 +185,34 @@ public class TableData {
     }
     
     public List getDataColumn(String name){
-        return dataSet.getColumn(name);
+        return getDataSet().getColumn(name);
+    }
+
+    /**
+     * @return the dataSet
+     */
+    public MockResultSet getDataSet() {
+        return dataSet;
+    }
+
+    /**
+     * @param dataSet the dataSet to set
+     */
+    public void setDataSet(MockResultSet dataSet) {
+        this.dataSet = dataSet;
+        this.dataSet.setResultSetType(MockResultSet.CONCUR_UPDATABLE);
+        this.dataSet.setResultSetConcurrency(MockResultSet.CONCUR_UPDATABLE);
+    }
+
+    /**
+     * @param defMap the defMap to set
+     */
+    public void setDefMap(HashMap<String,DataDef> defMap) {
+        this.defMap = defMap;
+    }
+    
+    public void deleteRowsWhitBlank(){
+        
     }
     
 }
