@@ -7,6 +7,7 @@ package datapreparation;
 import DataInputRead.*;
 import DataSet.*;
 import com.mockrunner.mock.jdbc.MockResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.*;
 /**
@@ -27,9 +28,9 @@ public class DataPreparation {
         * * 1. Define the data set by definitOp method which only gets the name, values and distinct elements of columns, sub type
         * 1.5 User need to define if the distinct values found are correct NOTE...The method to combine values works now is needed the input from user
         * * 2. Define if the data set is enough to do the investigation.
-        * 3. Handle null, empty or wrong data and if necessary identify the rows that should be deleted. NOTE..right now the way to handle is to delete the rows
+        * * 3. Handle null, empty or wrong data and if necessary identify the rows that should be deleted. NOTE..right now the way to handle is to delete the rows
         * 3.5. User need to define if the rows with wrong data should be deleted or handle
-        * 4. Define one more time if the data set is enough to do the investigation.
+        * * 4. Define one more time if the data set is enough to do the investigation.
         * 4. Define the types of variables for future statistical analisis
         * 4.5 User need to define if the columns types are define correclty.
         * 5. Converting Text Variables to Numerical variables. assign a Remap value
@@ -37,7 +38,7 @@ public class DataPreparation {
         * 7. 
         */
         
-        String path = "C:\\Users\\Emmanuel\\Documents\\Maestria\\CSVSamples\\farm_gdl_cp.csv";
+        String path = "C:\\Users\\Emmanuel\\Documents\\Maestria\\CSVSamples\\farm_gdl_cp_1.csv";
         CsvReader reader = new CsvReader(path);
         reader.readCsv();
         TableData table = new TableData();
@@ -54,10 +55,36 @@ public class DataPreparation {
             //NOTE..Think if we better create a class TableOperator
             //NOTE..Think if we can do a search of blank values and delete the complete row
             tableNoNull = cloneTable(table);
+            tableNoNull = deleteBlankValues(tableNoNull);
+            boolean set = tableNoNull.isDataEnough();
         }
         catch(Exception e){
             System.out.println("Main | SQLException | " + e.getMessage());
          }
+    }
+    
+    private static TableData deleteBlankValues(TableData table){
+        //check every row in the table and if there is any blank value then delete the row
+        MockResultSet data = table.getDataSet();
+        int row = 1;
+        List listRow = null;
+        try{
+            if(!data.isFirst())
+                data.first();
+            do{
+                listRow = data.getRow(row);
+                if(listRow.contains("")){
+                    data.deleteRow();
+                }
+                row++;
+            }
+            while(data.next());
+        }
+        catch(SQLException sqle){
+            System.out.println("Main | SQLException | deleteBlankValues | " + sqle.getMessage());
+        }
+        
+        return table;
     }
     
     private static TableData cloneTable(TableData table){
@@ -66,6 +93,7 @@ public class DataPreparation {
         MockResultSet dataSet = (MockResultSet)table.getDataSet().clone();
         HashMap<String,DataDef> dataDef = (HashMap<String,DataDef>)table.getDefMap().clone();
         dataSet = createUpdatedTable(dataSet, dataDef);
+        updatedTable.setDataSet(dataSet);
         return updatedTable;
     }
     

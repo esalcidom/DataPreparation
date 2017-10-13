@@ -30,7 +30,7 @@ public class TableData {
             if(header.length == colSize)
             {
                 MockResultSet mockResultSet = new MockResultSet("DataSet");
-                boolean f = mockResultSet.isClosed();
+                //boolean f = mockResultSet.isClosed();
                 for(String head : header){
                     mockResultSet.addColumn(head);
                 }
