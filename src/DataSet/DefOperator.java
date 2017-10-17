@@ -5,6 +5,7 @@
  */
 package DataSet;
 
+import com.mockrunner.mock.jdbc.MockResultSet;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +34,15 @@ public class DefOperator {
     
     public void defType(){
         
+    }
+    
+    public void defineVariableType(DataDef variable){
+        if(isCategorical(variable.getPopulation(), variable.getDistHead().size()))
+            variable.setVarType(VariableType.CATEGORICAL);
+        else if(isBinary(variable.getDistHead().size()))
+            variable.setVarType(VariableType.BINARY);
+        else if(isContinuous(variable.getVarSubType()))
+            variable.setVarType(VariableType.CONTINUOUS);
     }
     
     public void defineVariableSubType(DataDef data){
@@ -188,7 +198,6 @@ public class DefOperator {
     }
 
     public boolean isPopulationEnough(int totalPopulation, int totalVariables){
-        
         if(totalPopulation / totalVariables >= 150){
             return true;
         }
@@ -198,6 +207,28 @@ public class DefOperator {
             }
             return false;
         }
+    }
+    
+    private boolean isCategorical(int totalPupulation, int totalDiff){
+        //NOTE this is onlly a reference
+        if(totalDiff <= (totalPupulation * 0.015))
+            return true;
+        else
+            return false;
+    }
+    
+    private boolean isBinary(int totalDiff){
+        if(totalDiff == 2)
+            return true;
+        else
+            return false;
+    }
+    
+    private boolean isContinuous(VariableSubType value){
+        if(value.equals(VariableSubType.NUMERIC))
+            return true;
+        else
+            return false;
     }
     
 }

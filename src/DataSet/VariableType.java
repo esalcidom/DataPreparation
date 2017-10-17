@@ -10,5 +10,7 @@ package DataSet;
  * @author Emmanuel
  */
 public enum VariableType {
-    CATEGORICAL, CONTINUOUS, BINARY, NOMINAL, ORDINAL, INTERVAL, RATIO, NONE
+    //NOTE..no ordintal, interval, and ratio will be use
+    //CATEGORICAL, CONTINUOUS, BINARY, ORDINAL, INTERVAL, RATIO, NONE
+    CATEGORICAL, CONTINUOUS, BINARY, NONE
 }

@@ -15,7 +15,8 @@ public class DataDef {
     
     private StringBuilder name;
     //private List<String> variableData; delete the whole store of values of column, that is why we have the table
-    private List<VariableType> varType;
+    //private List<VariableType> varType;
+    private VariableType varType;
     private VariableSubType varSubType; //variable sub type refers if the variable is numeric, alpha or alphanumeric
     private double mean;
     private double median;
@@ -33,7 +34,7 @@ public class DataDef {
     private List<String> distHead; //Need to check if it's necessary this distinc values'
     private int population;
     private boolean isEnable;
-    private Map<String,Integer> remapValues; //This characteristic can hold a remap values for the variable holding the same key string as distValues and the other value. NOTE THE REMAP IS FOR ALPHA TO NUMERIC
+    private Map<String,String> remapValues; //This characteristic can hold a remap values for the variable holding the same key string as distValues and the other value. NOTE THE REMAP IS FOR ALPHA TO NUMERIC
     
     
     public DataDef(){
@@ -305,6 +306,20 @@ public class DataDef {
      */
     public void setVarSubType(VariableSubType varSubType) {
         this.varSubType = varSubType;
+    }
+
+    /**
+     * @return the varType
+     */
+    public VariableType getVarType() {
+        return varType;
+    }
+
+    /**
+     * @param varType the varType to set
+     */
+    public void setVarType(VariableType varType) {
+        this.varType = varType;
     }
 
     

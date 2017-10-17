@@ -150,6 +150,29 @@ public class TableData {
         }
     }
     
+    public static TableData cloneTable(TableData table){
+        //Clone the original table so the updates can be done in the new table. NOTE..Not sure where to put this method
+        TableData updatedTable = new TableData();
+        MockResultSet dataSet = (MockResultSet)table.getDataSet().clone();
+        HashMap<String,DataDef> dataDef = (HashMap<String,DataDef>)table.getDefMap().clone();
+        dataSet = createUpdatedTable(dataSet, dataDef);
+        updatedTable.setDataSet(dataSet);
+        return updatedTable;
+    }
+    
+    private static MockResultSet createUpdatedTable(MockResultSet dataSet, HashMap<String,DataDef> dataDef){
+        //from the table delete the columns which are disabled in data set
+        MockResultSet updatedDataSet = new MockResultSet("clonedDataSet");
+        for(Map.Entry<String, DataDef> entry : dataDef.entrySet()){
+            String col = entry.getKey();
+            DataDef def = entry.getValue();
+            if(def.getIsEnable()){
+               updatedDataSet.addColumn(col, dataSet.getColumn(col));
+            }
+        }
+        return updatedDataSet;
+    }
+    
     public boolean isDataEnough(){
         int enableCol = 0;
         int population = getDataSet().getRowCount();
