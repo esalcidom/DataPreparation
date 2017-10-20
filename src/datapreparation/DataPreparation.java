@@ -34,6 +34,7 @@ public class DataPreparation {
         * * 4. Define the types of variables for future statistical analysis
         * * 4.5 User need to define if the columns types are define correctly.
         * 5. Converting Text Variables to Numerical variables. assign a Remap value
+        * 6. Converting Numerical variables to Categorical variables
         * 6. Generate Statistic Summary for each variable
         * 7. 
         */
@@ -55,36 +56,13 @@ public class DataPreparation {
             //NOTE..Think if we better create a class TableOperator
             //NOTE..Think if we can do a search of blank values and delete the complete row
             tableNoNull = TableData.cloneTable(table);
-            tableNoNull = deleteBlankValues(tableNoNull);
+            tableNoNull = TableData.deleteBlankValues(tableNoNull);
+            tableNoNull.definitionOp();
             boolean set = tableNoNull.isDataEnough();
         }
         catch(Exception e){
             System.out.println("Main | SQLException | " + e.getMessage());
          }
-    }
-    
-    private static TableData deleteBlankValues(TableData table){
-        //check every row in the table and if there is any blank value then delete the row
-        MockResultSet data = table.getDataSet();
-        int row = 1;
-        List listRow = null;
-        try{
-            if(!data.isFirst())
-                data.first();
-            do{
-                listRow = data.getRow(row);
-                if(listRow.contains("")){
-                    data.deleteRow();
-                }
-                row++;
-            }
-            while(data.next());
-        }
-        catch(SQLException sqle){
-            System.out.println("Main | SQLException | deleteBlankValues | " + sqle.getMessage());
-        }
-        
-        return table;
     }
     
 }

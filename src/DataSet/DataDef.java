@@ -14,9 +14,8 @@ import java.util.*;
 public class DataDef {
     
     private StringBuilder name;
-    //private List<String> variableData; delete the whole store of values of column, that is why we have the table
-    //private List<VariableType> varType;
-    private VariableType varType;
+    private List<VariableType> varType;
+    private VariableType mapedType;
     private VariableSubType varSubType; //variable sub type refers if the variable is numeric, alpha or alphanumeric
     private double mean;
     private double median;
@@ -26,6 +25,7 @@ public class DataDef {
     private double max;
     private double min;
     private double lowQuartile;
+    private double midQuartile;
     private double upQuartile;
     private double rangeQuartile;
     private double variance;
@@ -34,6 +34,8 @@ public class DataDef {
     private List<String> distHead; //Need to check if it's necessary this distinc values'
     private int population;
     private boolean isEnable;
+    private List<Double> numericValues; //This list is only populated if the variable is numeric
+    private List<String> stringValues; //This list stored the variable
     private Map<String,String> remapValues; //This characteristic can hold a remap values for the variable holding the same key string as distValues and the other value. NOTE THE REMAP IS FOR ALPHA TO NUMERIC
     
     
@@ -311,15 +313,85 @@ public class DataDef {
     /**
      * @return the varType
      */
-    public VariableType getVarType() {
+    public List<VariableType> getVarType() {
         return varType;
     }
 
     /**
      * @param varType the varType to set
      */
-    public void setVarType(VariableType varType) {
+    public void setVarType(List<VariableType> varType) {
         this.varType = varType;
+    }
+
+    /**
+     * @return the mapedType
+     */
+    public VariableType getMapedType() {
+        return mapedType;
+    }
+
+    /**
+     * @param mapedType the mapedType to set
+     */
+    public void setMapedType(VariableType mapedType) {
+        this.mapedType = mapedType;
+    }
+
+    /**
+     * @return the midQuartile
+     */
+    public double getMidQuartile() {
+        return midQuartile;
+    }
+
+    /**
+     * @param midQuartile the midQuartile to set
+     */
+    public void setMidQuartile(double midQuartile) {
+        this.midQuartile = midQuartile;
+    }
+
+    /**
+     * @return the numericValues
+     */
+    public List<Double> getNumericValues() {
+        return numericValues;
+    }
+
+    /**
+     * @param numericValues the numericValues to set
+     */
+    public void setNumericValues(List<Double> numericValues) {
+        this.numericValues = numericValues;
+    }
+
+    /**
+     * @return the stringValues
+     */
+    public List<String> getStringValues() {
+        return stringValues;
+    }
+
+    /**
+     * @param stringValues the stringValues to set
+     */
+    public void setStringValues(List<String> stringValues) {
+        this.stringValues = stringValues;
+    }
+
+    /**
+     * @return the remapValues
+     */
+    public Map<String,String> getRemapValues() {
+        return remapValues;
+    }
+
+    /**
+     * @param remapValues the remapValues to set
+     */
+    public void setRemapValues(Map<String,String> remapValues) {
+        this.remapValues = remapValues;
     }
 
     

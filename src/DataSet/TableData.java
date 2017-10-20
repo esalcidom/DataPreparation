@@ -73,10 +73,13 @@ public class TableData {
                 distinctValues = distVariables(columnResult);
                 distinctCount = countDistVariables(distinctValues,columnResult);
                 def.setName(colName);
+                def.setStringValues(columnResult);
                 def.setDistHead(distinctValues);
                 def.setDistValues(distinctCount);
                 def.setPopulation(columnResult.size());
                 defOperator.defineVariableSubType(def);
+                if(def.getVarSubType().equals(VariableSubType.NUMERIC))
+                    defOperator.stringValuesToDouble(def);
                 getDefMap().put(def.getName().toString(),def);
             }
         }
@@ -171,6 +174,31 @@ public class TableData {
             }
         }
         return updatedDataSet;
+    }
+    
+    public static TableData deleteBlankValues(TableData table){
+        //check every row in the table and if there is any blank value then delete the row
+        MockResultSet data = table.getDataSet();
+        int row = 1;
+        List listRow = null;
+        try{
+            if(!data.isFirst())
+                data.first();
+            do{
+                listRow = data.getRow(row);
+                if(listRow.contains("")){
+                    data.deleteRow();
+                }
+                row++;
+            }
+            while(data.next());
+            
+        }
+        catch(SQLException sqle){
+            System.out.println("Main | SQLException | deleteBlankValues | " + sqle.getMessage());
+        }
+        
+        return table;
     }
     
     public boolean isDataEnough(){

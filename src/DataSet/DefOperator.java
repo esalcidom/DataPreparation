@@ -37,12 +37,13 @@ public class DefOperator {
     }
     
     public void defineVariableType(DataDef variable){
+        List<VariableType> list = new ArrayList<VariableType>();
         if(isCategorical(variable.getPopulation(), variable.getDistHead().size()))
-            variable.setVarType(VariableType.CATEGORICAL);
-        else if(isBinary(variable.getDistHead().size()))
-            variable.setVarType(VariableType.BINARY);
-        else if(isContinuous(variable.getVarSubType()))
-            variable.setVarType(VariableType.CONTINUOUS);
+            list.add(VariableType.CATEGORICAL);
+        if(isBinary(variable.getDistHead().size()))
+            list.add(VariableType.BINARY);
+        if(isContinuous(variable.getVarSubType()))
+            list.add(VariableType.CONTINUOUS);
     }
     
     public void defineVariableSubType(DataDef data){
@@ -231,4 +232,41 @@ public class DefOperator {
             return false;
     }
     
+    //Create categorical values for Numerical variable and numerical values from Alpha variables
+    public void createNumAndCatVariables(DataDef variableDef){
+        if(variableDef.getVarType().equals(VariableType.CONTINUOUS) && variableDef.getVarSubType().equals(VariableSubType.NUMERIC))
+            mapToCategorical(variableDef);
+        else if(variableDef.getVarType().equals(VariableType.TEXT) && (variableDef.getVarSubType().equals(VariableSubType.ALPHA) || variableDef.getVarSubType().equals(VariableSubType.ALPHANUMERIC)))
+            mapToNumerical(variableDef);
+    }
+    
+    //Categorical can be done with quartiles 3 levels and to set Quartiles need to be done in another method
+    private void mapToCategorical(DataDef variableDef){
+        List<Double> sortList = variableDef.getNumericValues();
+        Collections.sort(sortList);
+        int sizeIndex = sortList.size();
+        variableDef.setMidQuartile(sortList.get(sizeIndex / 2));
+        variableDef.setLowQuartile(sortList.get(sizeIndex / 4));
+        variableDef.setLowQuartile(sortList.get((sizeIndex / 4) * 3));
+    }
+    
+    //Numerical can be done with the assignation of index to all values.
+    private void mapToNumerical(DataDef variableDef){
+        List<String> headValues = variableDef.getDistHead();
+        Map<String,String> map = new HashMap<String,String>();
+        StringBuilder stringIndex = new StringBuilder();
+        for(int i=0;i<headValues.size();i++){
+            stringIndex.append(i+1);
+            map.put(headValues.get(i), stringIndex.toString());
+            stringIndex.delete(0, stringIndex.length());
+        }
+    }
+    
+    public void stringValuesToDouble(DataDef variableDef){
+        List<Double> numList = new ArrayList<Double>();
+        for(String value : variableDef.getStringValues()){
+            numList.add(Double.parseDouble(value));
+        }
+        variableDef.setNumericValues(numList);
+    }
 }
