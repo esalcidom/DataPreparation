@@ -266,4 +266,10 @@ public class TableData {
         
     }
     
+    public void summerizeColumns(){
+        for(Map.Entry<String, DataDef> entry : getDefMap().entrySet()){
+            defOperator.summerizeData(entry.getValue());
+        }
+    }
+    
 }

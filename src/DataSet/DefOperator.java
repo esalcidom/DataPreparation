@@ -10,6 +10,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
+import org.apache.commons.math3.stat.descriptive.moment.Skewness;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 /**
  *
@@ -239,6 +243,94 @@ public class DefOperator {
         else if(variableDef.getVarType().equals(VariableType.TEXT) && (variableDef.getVarSubType().equals(VariableSubType.ALPHA) || variableDef.getVarSubType().equals(VariableSubType.ALPHANUMERIC)))
             mapToNumerical(variableDef);
     }
+    
+    ////////SUMERAIZE OPERATION
+
+    public void summerizeData(DataDef variableDef){
+        double[] data = generateArrayDouble(variableDef.getNumericValues());
+        calculateQuartile(variableDef);
+        variableDef.setMean(createMean(data));
+        variableDef.setMode(createMode(data));
+        variableDef.setGeometricMean(createGeometricMean(data));
+        variableDef.setMax(createMax(data));
+        variableDef.setMin(createMin(data));
+        variableDef.setNormilizeData(createNormalize(data));
+        variableDef.setPercentil(createPercentil(data));
+        variableDef.setPopulationVariance(createpopulationVariance(data, variableDef.getMean()));
+        variableDef.setVariance(createVariance(data,  variableDef.getMean()));
+        variableDef.setStandrDev(createSD(data));
+        variableDef.setSkewness(createSkewness(data));
+        variableDef.setKurtosis(createKurtosis(data));
+    }
+    
+    private void calculateQuartile(DataDef variableDef){
+        List<Double> list = variableDef.getNumericValues();
+        Collections.sort(list);
+        int sizeIndex = list.size();
+        variableDef.setMidQuartile(list.get(sizeIndex / 2));
+        variableDef.setLowQuartile(list.get(sizeIndex / 4));
+        variableDef.setLowQuartile(list.get((sizeIndex / 4) * 3));
+    }
+
+    private double createMean(double[] values){
+        return StatUtils.mean(values);
+    }
+
+    private double[] createMode(double[] values){
+        return StatUtils.mode(values);
+    }
+
+    private double createGeometricMean(double[] values){
+        return StatUtils.geometricMean(values);
+    }
+
+    private double createMax(double[] values){
+        return StatUtils.max(values);
+    }
+
+    private double createMin(double[] values){
+        return StatUtils.min(values);
+    }
+
+    private double[] createNormalize(double[] values){
+        return StatUtils.normalize(values);
+    }
+
+    //Don't know if percentile is neccessary
+    private double createPercentil(double[] values){
+        return StatUtils.percentile(values,95.0);
+    }
+    private double createPercentil(double[] values, double p){
+        return StatUtils.percentile(values,p);
+    }
+    
+    private double createpopulationVariance(double[] values, double mean){
+        return StatUtils.populationVariance(values, mean);
+    }
+
+    private double createVariance(double[] values, double mean){
+        return StatUtils.variance(values, mean);
+    }
+
+    private double createSD(double[] values){
+        StandardDeviation sd = new StandardDeviation(false);
+        return sd.evaluate(values);
+    }
+
+    private double createSkewness(double[] values){
+        Skewness skewness = new Skewness();
+        return skewness.evaluate(values,0,values.length);
+    }
+
+    private double createKurtosis(double[] values){
+        Kurtosis kurtosis = new Kurtosis();
+        return kurtosis.evaluate(values,0,values.length);
+    }
+    
+    private double[] generateArrayDouble(List<Double> values){
+        return values.stream().mapToDouble(Double::doubleValue).toArray();
+    }
+    ////////////////END SUMMERIZE OPERATION
     
     //Categorical can be done with quartiles 3 levels and to set Quartiles need to be done in another method
     private void mapToCategorical(DataDef variableDef){

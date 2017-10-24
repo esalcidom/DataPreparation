@@ -18,6 +18,10 @@ public class DataDef {
     private VariableType mapedType;
     private VariableSubType varSubType; //variable sub type refers if the variable is numeric, alpha or alphanumeric
     private double mean;
+    private double[] mode;
+    private double geometricMean;
+    private double[] normilizeData;
+    private double percentil;
     private double median;
     private double skewness;
     private double standrDev;
@@ -29,6 +33,7 @@ public class DataDef {
     private double upQuartile;
     private double rangeQuartile;
     private double variance;
+    private double populationVariance;
     private double kurtosis;
     private Map<String,Integer> distValues;
     private List<String> distHead; //Need to check if it's necessary this distinc values'
@@ -392,6 +397,76 @@ public class DataDef {
      */
     public void setRemapValues(Map<String,String> remapValues) {
         this.remapValues = remapValues;
+    }
+
+    /**
+     * @return the mode
+     */
+    public double[] getMode() {
+        return mode;
+    }
+
+    /**
+     * @param mode the mode to set
+     */
+    public void setMode(double mode[]) {
+        this.mode = mode;
+    }
+
+    /**
+     * @return the geometricMean
+     */
+    public double getGeometricMean() {
+        return geometricMean;
+    }
+
+    /**
+     * @param geometricMean the geometricMean to set
+     */
+    public void setGeometricMean(double geometricMean) {
+        this.geometricMean = geometricMean;
+    }
+
+    /**
+     * @return the normilizeData
+     */
+    public double[] getNormilizeData() {
+        return normilizeData;
+    }
+
+    /**
+     * @param normilizeData the normilizeData to set
+     */
+    public void setNormilizeData(double[] normilizeData) {
+        this.normilizeData = normilizeData;
+    }
+
+    /**
+     * @return the percentil
+     */
+    public double getPercentil() {
+        return percentil;
+    }
+
+    /**
+     * @param percentil the percentil to set
+     */
+    public void setPercentil(double percentil) {
+        this.percentil = percentil;
+    }
+
+    /**
+     * @return the populationVariance
+     */
+    public double getPopulationVariance() {
+        return populationVariance;
+    }
+
+    /**
+     * @param populationVariance the populationVariance to set
+     */
+    public void setPopulationVariance(double populationVariance) {
+        this.populationVariance = populationVariance;
     }
 
     
