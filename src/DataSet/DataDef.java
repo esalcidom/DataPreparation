@@ -40,7 +40,7 @@ public class DataDef {
     private int population;
     private boolean isEnable;
     private List<Double> numericValues; //This list is only populated if the variable is numeric
-    private List<String> stringValues; //This list stored the variable
+    private List<String> originalValues; //This list stored the variable
     private Map<String,String> remapValues; //This characteristic can hold a remap values for the variable holding the same key string as distValues and the other value. NOTE THE REMAP IS FOR ALPHA TO NUMERIC
     
     
@@ -374,15 +374,15 @@ public class DataDef {
     /**
      * @return the stringValues
      */
-    public List<String> getStringValues() {
-        return stringValues;
+    public List<String> getOriginalValues() {
+        return originalValues;
     }
 
     /**
      * @param stringValues the stringValues to set
      */
-    public void setStringValues(List<String> stringValues) {
-        this.stringValues = stringValues;
+    public void setOriginalValues(List<String> stringValues) {
+        this.originalValues = stringValues;
     }
 
     /**

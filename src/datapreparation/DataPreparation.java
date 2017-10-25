@@ -56,7 +56,7 @@ public class DataPreparation {
             //NOTE..Think if we better create a class TableOperator
             //NOTE..Think if we can do a search of blank values and delete the complete row
             tableNoNull = TableData.cloneTable(table);
-            tableNoNull = TableData.deleteBlankValues(tableNoNull);
+            tableNoNull.deleteBlankValues();
             tableNoNull.definitionOp();
             boolean set = tableNoNull.isDataEnough();
         }

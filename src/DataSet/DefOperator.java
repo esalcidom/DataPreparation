@@ -356,8 +356,13 @@ public class DefOperator {
     
     public void stringValuesToDouble(DataDef variableDef){
         List<Double> numList = new ArrayList<Double>();
-        for(String value : variableDef.getStringValues()){
-            numList.add(Double.parseDouble(value));
+        for(String value : variableDef.getOriginalValues()){
+            try{
+                numList.add(Double.parseDouble(value));
+            }
+            catch(Exception e){
+                numList.add(null);
+            }
         }
         variableDef.setNumericValues(numList);
     }

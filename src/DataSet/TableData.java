@@ -26,8 +26,8 @@ public class TableData {
     public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{
         //Read from the csv file to table
         if(header != null && data!= null){
-            colSize = dataColumnSize;
-            if(header.length == colSize)
+            setColSize(dataColumnSize);
+            if(header.length == getColSize())
             {
                 MockResultSet mockResultSet = new MockResultSet("DataSet");
                 //boolean f = mockResultSet.isClosed();
@@ -64,7 +64,7 @@ public class TableData {
         DataDef def;
         
         try{
-            for(int i=1;i<colSize;i++){
+            for(int i=1;i<getColSize();i++){
                 def = new DataDef();
                 colName = new StringBuilder(getDataSet().getMetaData().getColumnName(i));
                 columnData = getDataSet().getColumn(colName.toString());
@@ -73,13 +73,14 @@ public class TableData {
                 distinctValues = distVariables(columnResult);
                 distinctCount = countDistVariables(distinctValues,columnResult);
                 def.setName(colName);
-                def.setStringValues(columnResult);
+                def.setOriginalValues(columnResult);
                 def.setDistHead(distinctValues);
                 def.setDistValues(distinctCount);
                 def.setPopulation(columnResult.size());
                 defOperator.defineVariableSubType(def);
-                if(def.getVarSubType().equals(VariableSubType.NUMERIC))
+                if(def.getVarSubType().equals(VariableSubType.NUMERIC)){
                     defOperator.stringValuesToDouble(def);
+                }
                 getDefMap().put(def.getName().toString(),def);
             }
         }
@@ -158,12 +159,14 @@ public class TableData {
         TableData updatedTable = new TableData();
         MockResultSet dataSet = (MockResultSet)table.getDataSet().clone();
         HashMap<String,DataDef> dataDef = (HashMap<String,DataDef>)table.getDefMap().clone();
-        dataSet = createUpdatedTable(dataSet, dataDef);
+        dataSet = createEnableColTable(dataSet, dataDef);
         updatedTable.setDataSet(dataSet);
+        updatedTable.setColSize(dataSet.getColumnCount());
+        updatedTable.setDefMap(dataDef);
         return updatedTable;
     }
     
-    private static MockResultSet createUpdatedTable(MockResultSet dataSet, HashMap<String,DataDef> dataDef){
+    private static MockResultSet createEnableColTable(MockResultSet dataSet, HashMap<String,DataDef> dataDef){
         //from the table delete the columns which are disabled in data set
         MockResultSet updatedDataSet = new MockResultSet("clonedDataSet");
         for(Map.Entry<String, DataDef> entry : dataDef.entrySet()){
@@ -176,29 +179,46 @@ public class TableData {
         return updatedDataSet;
     }
     
-    public static TableData deleteBlankValues(TableData table){
+    public void deleteBlankValues(){
         //check every row in the table and if there is any blank value then delete the row
-        MockResultSet data = table.getDataSet();
+        MockResultSet data = this.getDataSet();
+        MockResultSet noBlankDataSet = new MockResultSet("clonedNoBlankDataSet");
+        setDataSetColName(this,noBlankDataSet);
         int row = 1;
         List listRow = null;
         try{
             if(!data.isFirst())
                 data.first();
+            if(!noBlankDataSet.isFirst())
+                noBlankDataSet.first();
             do{
                 listRow = data.getRow(row);
                 if(listRow.contains("")){
-                    data.deleteRow();
+                    row++;
+                    continue;
+                }
+                else{
+                    noBlankDataSet.addRow(listRow);
+                    noBlankDataSet.next();
                 }
                 row++;
             }
             while(data.next());
-            
+            this.setDataSet(noBlankDataSet);
         }
         catch(SQLException sqle){
             System.out.println("Main | SQLException | deleteBlankValues | " + sqle.getMessage());
         }
         
-        return table;
+        //return table;
+    }
+    
+    private void setDataSetColName(TableData table, MockResultSet dataSet){
+        HashMap<String,DataDef> dataDef = (HashMap<String,DataDef>)table.getDefMap();
+        for(Map.Entry<String, DataDef> entry : dataDef.entrySet()){
+            String col = entry.getKey();
+            dataSet.addColumn(col);
+        }
     }
     
     public boolean isDataEnough(){
@@ -214,7 +234,12 @@ public class TableData {
     
     private List<String> cleanVariable(List data){
         for(int i=0;i<data.size();i++){
-            data.set(i, defOperator.cleanString(data.get(i).toString()));
+            try{
+                data.set(i, defOperator.cleanString(data.get(i).toString()));
+            }
+            catch(Exception e){
+                continue;
+            }
         }
         return data;
     }
@@ -270,6 +295,20 @@ public class TableData {
         for(Map.Entry<String, DataDef> entry : getDefMap().entrySet()){
             defOperator.summerizeData(entry.getValue());
         }
+    }
+
+    /**
+     * @return the colSize
+     */
+    public int getColSize() {
+        return colSize;
+    }
+
+    /**
+     * @param colSize the colSize to set
+     */
+    public void setColSize(int colSize) {
+        this.colSize = colSize;
     }
     
 }
