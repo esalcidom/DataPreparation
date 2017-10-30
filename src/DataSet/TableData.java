@@ -14,13 +14,14 @@ public class TableData {
     
     private MockResultSet dataSet;
     private HashMap<String,DataDef> defMap;
+    private List<Integer> indexDeletedList;
     private int colSize = 0;
     private DefOperator defOperator;
     
     public TableData(){
         defMap = new HashMap<String,DataDef>();
         defOperator = new DefOperator();
-        
+        indexDeletedList = new ArrayList<Integer>();
     }
     
     public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{
@@ -67,17 +68,18 @@ public class TableData {
             for(int i=1;i<getColSize();i++){
                 def = new DataDef();
                 colName = new StringBuilder(getDataSet().getMetaData().getColumnName(i));
+                def.setName(colName);
                 columnData = getDataSet().getColumn(colName.toString());
                 columnResult = cleanVariable(columnData);
-                updateColumnValue(colName,columnResult);
                 distinctValues = distVariables(columnResult);
                 distinctCount = countDistVariables(distinctValues,columnResult);
-                def.setName(colName);
                 def.setOriginalValues(columnResult);
+                updateColumnValue(colName,columnResult);
+                defOperator.defineVariableSubType(def,columnData);
                 def.setDistHead(distinctValues);
                 def.setDistValues(distinctCount);
                 def.setPopulation(columnResult.size());
-                defOperator.defineVariableSubType(def);
+                
                 if(def.getVarSubType().equals(VariableSubType.NUMERIC)){
                     defOperator.stringValuesToDouble(def);
                 }
@@ -179,6 +181,16 @@ public class TableData {
         return updatedDataSet;
     }
     
+    //Create categorical values for Numerical variable and numerical values from Alpha variables
+    public void createNumAndCatVariables(){
+        for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
+            if(entry.getValue().getVarSubType().equals(VariableSubType.NUMERIC))
+            defOperator.mapToCategorical(entry.getValue());
+        else if(entry.getValue().getVarSubType().equals(VariableSubType.ALPHA) || entry.getValue().getVarSubType().equals(VariableSubType.ALPHANUMERIC))
+            defOperator.mapToNumerical(entry.getValue());
+        }
+    }
+    
     public void deleteBlankValues(){
         //check every row in the table and if there is any blank value then delete the row
         MockResultSet data = this.getDataSet();
@@ -193,13 +205,14 @@ public class TableData {
                 noBlankDataSet.first();
             do{
                 listRow = data.getRow(row);
-                if(listRow.contains("")){
+                if(!listRow.contains("")){
+                    noBlankDataSet.addRow(listRow);
+                    noBlankDataSet.next();
                     row++;
                     continue;
                 }
                 else{
-                    noBlankDataSet.addRow(listRow);
-                    noBlankDataSet.next();
+                    indexDeletedList.add(row);
                 }
                 row++;
             }

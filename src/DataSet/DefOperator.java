@@ -50,11 +50,12 @@ public class DefOperator {
             list.add(VariableType.CONTINUOUS);
     }
     
-    public void defineVariableSubType(DataDef data){
+    public void defineVariableSubType(DataDef data, List<String> listValues){
         Random random = new Random();
         List<String> listSearch = new ArrayList<String>();
         while(listSearch.size()<10){
-            String element = data.getDistHead().get(random.nextInt(data.getDistHead().size())); 
+            String element = listValues.get(random.nextInt(listValues.size()));
+            element = this.cleanString(element);
             if(element.equals("") || element.equals(" "))
                 continue;
             listSearch.add(element);
@@ -135,15 +136,14 @@ public class DefOperator {
     }
     
     public String cleanString(String value){
-        return value.replaceAll("[^a-zA-Z0-9áÁíÍúÚéÉóÓñÑ\\s]", "").trim();
+        return value.replaceAll("[^a-zA-Z0-9áÁíÍúÚéÉóÓñÑ.\\s]", "").trim();
     }
 
     public void remapAlphaToNumeric(DataDef data){
         //As name says this remaps the values to only index base. NOTE THE IMPLEMENTATION IS MISSING IN TABLE CLASS
-        HashMap<String,Integer> toNumeric = new HashMap<String,Integer>();
-        int headSize = data.getDistHead().size();
-        for(int i=0;i<headSize;i++){
-            toNumeric.put(data.getDistHead().get(i), i++);
+        int indexValues = data.getOriginalValues().size();
+        for(int i=0;i<indexValues;i++){
+            
         }
         
     }
@@ -235,20 +235,12 @@ public class DefOperator {
         else
             return false;
     }
-    
-    //Create categorical values for Numerical variable and numerical values from Alpha variables
-    public void createNumAndCatVariables(DataDef variableDef){
-        if(variableDef.getVarType().equals(VariableType.CONTINUOUS) && variableDef.getVarSubType().equals(VariableSubType.NUMERIC))
-            mapToCategorical(variableDef);
-        else if(variableDef.getVarType().equals(VariableType.TEXT) && (variableDef.getVarSubType().equals(VariableSubType.ALPHA) || variableDef.getVarSubType().equals(VariableSubType.ALPHANUMERIC)))
-            mapToNumerical(variableDef);
-    }
-    
+ 
     ////////SUMERAIZE OPERATION
 
     public void summerizeData(DataDef variableDef){
         double[] data = generateArrayDouble(variableDef.getNumericValues());
-        calculateQuartile(variableDef);
+        //calculateQuartile(variableDef);
         variableDef.setMean(createMean(data));
         variableDef.setMode(createMode(data));
         variableDef.setGeometricMean(createGeometricMean(data));
@@ -333,17 +325,39 @@ public class DefOperator {
     ////////////////END SUMMERIZE OPERATION
     
     //Categorical can be done with quartiles 3 levels and to set Quartiles need to be done in another method
-    private void mapToCategorical(DataDef variableDef){
-        List<Double> sortList = variableDef.getNumericValues();
-        Collections.sort(sortList);
-        int sizeIndex = sortList.size();
-        variableDef.setMidQuartile(sortList.get(sizeIndex / 2));
-        variableDef.setLowQuartile(sortList.get(sizeIndex / 4));
-        variableDef.setLowQuartile(sortList.get((sizeIndex / 4) * 3));
+    public void mapToCategorical(DataDef variableDef){
+        List<Double> numericalValues = variableDef.getNumericValues();
+        Map<String,String> map = new HashMap<String,String>();
+        if(variableDef.getLowQuartile() == 0.0d && variableDef.getMidQuartile() == 0.0d && variableDef.getUpQuartile() == 0.0d)
+            calculateQuartile(variableDef);
+        StringBuilder index = new StringBuilder("1");
+        StringBuilder tag = new StringBuilder(variableDef.getMin() +" - "+ variableDef.getLowQuartile());
+        map.put(index.toString(), tag.toString());
+        index.delete(0, index.length());
+        tag.delete(0, tag.length());
+        
+        index.append("2");
+        tag.append((variableDef.getLowQuartile()+1) + " - " + variableDef.getMidQuartile());
+        map.put(index.toString(), tag.toString());
+        index.delete(0, index.length());
+        tag.delete(0, tag.length());
+        
+        index.append("3");
+        tag.append((variableDef.getMidQuartile()+1) + " - " + variableDef.getUpQuartile());
+        map.put(index.toString(), tag.toString());
+        index.delete(0, index.length());
+        tag.delete(0, tag.length());
+        
+        index.append("4");
+        tag.append((variableDef.getUpQuartile()+1) + " - " + variableDef.getMax());
+        map.put(index.toString(), tag.toString());
+        
+        variableDef.setCategoricalValue(createCategoricalValues(numericalValues,variableDef.getLowQuartile(),variableDef.getMidQuartile(),variableDef.getUpQuartile()));
+        variableDef.setRemapValues(map);
     }
     
     //Numerical can be done with the assignation of index to all values.
-    private void mapToNumerical(DataDef variableDef){
+    public void mapToNumerical(DataDef variableDef){
         List<String> headValues = variableDef.getDistHead();
         Map<String,String> map = new HashMap<String,String>();
         StringBuilder stringIndex = new StringBuilder();
@@ -352,6 +366,16 @@ public class DefOperator {
             map.put(headValues.get(i), stringIndex.toString());
             stringIndex.delete(0, stringIndex.length());
         }
+        variableDef.setNumericValues(createListbyDistinct(map,variableDef.getOriginalValues()));
+        variableDef.setRemapValues(map);
+    }
+    
+    private List<Double> createListbyDistinct(Map<String,String> map, List<String> originalValues){
+        List<Double> numValues = new ArrayList<Double>(originalValues.size());
+        for(String originalKey : originalValues){
+            numValues.add(Double.parseDouble(map.get(originalKey)));
+        }
+        return numValues;
     }
     
     public void stringValuesToDouble(DataDef variableDef){
@@ -365,5 +389,20 @@ public class DefOperator {
             }
         }
         variableDef.setNumericValues(numList);
+    }
+
+    private List<String> createCategoricalValues(List<Double> numericalValues, double lowQuartile, double midQuartile, double upQuartile) {
+        List<String> values = new ArrayList<String>();
+        for(int i=0;i<numericalValues.size();i++){
+            if(numericalValues.get(i)<=lowQuartile)
+                values.add("1");
+            else if(numericalValues.get(i)>lowQuartile && numericalValues.get(i)<=midQuartile)
+                values.add("2");
+            else if(numericalValues.get(i)>midQuartile && numericalValues.get(i)<=upQuartile)
+                values.add("3");
+            else
+                values.add("4");
+        }
+        return values;
     }
 }

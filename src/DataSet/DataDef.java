@@ -41,6 +41,7 @@ public class DataDef {
     private boolean isEnable;
     private List<Double> numericValues; //This list is only populated if the variable is numeric
     private List<String> originalValues; //This list stored the variable
+    private List<String> categoricalValue;
     private Map<String,String> remapValues; //This characteristic can hold a remap values for the variable holding the same key string as distValues and the other value. NOTE THE REMAP IS FOR ALPHA TO NUMERIC
     
     
@@ -467,6 +468,20 @@ public class DataDef {
      */
     public void setPopulationVariance(double populationVariance) {
         this.populationVariance = populationVariance;
+    }
+
+    /**
+     * @return the categoricalValue
+     */
+    public List<String> getCategoricalValue() {
+        return categoricalValue;
+    }
+
+    /**
+     * @param categoricalValue the categoricalValue to set
+     */
+    public void setCategoricalValue(List<String> categoricalValue) {
+        this.categoricalValue = categoricalValue;
     }
 
     

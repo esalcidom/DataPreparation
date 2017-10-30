@@ -33,13 +33,15 @@ public class DataPreparation {
         * * 4. Define one more time if the data set is enough to do the investigation.
         * * 4. Define the types of variables for future statistical analysis
         * * 4.5 User need to define if the columns types are define correctly.
-        * 5. Converting Text Variables to Numerical variables. assign a Remap value
-        * 6. Converting Numerical variables to Categorical variables
-        * 6. Generate Statistic Summary for each variable
-        * 7. 
+        * * 5 Creates new table which will define user if it is the correct one to use in the investigation
+        * 5.5 User need to define if empty values need to be changed or just to remove them.
+        * * 6. Converting Text Variables to Numerical variables. assign a Remap value
+        * * 7. Converting Numerical variables to Categorical variables
+        * * 8. Generate Statistic Summary for each variable
+        * 9. 
         */
         
-        String path = "C:\\Users\\Emmanuel\\Documents\\Maestria\\CSVSamples\\farm_gdl_cp_1.csv";
+        String path = "C:\\Users\\Emmanuel\\Documents\\Maestria\\CSVSamples\\fam_gdl_cp_2.csv";
         CsvReader reader = new CsvReader(path);
         reader.readCsv();
         TableData table = new TableData();
@@ -57,8 +59,13 @@ public class DataPreparation {
             //NOTE..Think if we can do a search of blank values and delete the complete row
             tableNoNull = TableData.cloneTable(table);
             tableNoNull.deleteBlankValues();
+            ///NOTA NO SE ESTA GENERANDO BIEN LOS VALORES STRING Y NUMERICOS
             tableNoNull.definitionOp();
+            tableNoNull.createNumAndCatVariables();
             boolean set = tableNoNull.isDataEnough();
+            //we can check with table with no null or blank is ok with user approval
+            //then implement the edition of the original table in focus with the rows with issues
+            tableNoNull.summerizeColumns();
         }
         catch(Exception e){
             System.out.println("Main | SQLException | " + e.getMessage());
