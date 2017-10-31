@@ -65,11 +65,11 @@ public class TableData {
         DataDef def;
         
         try{
-            for(int i=1;i<getColSize();i++){
+            for(int i=1;i<=getColSize();i++){
                 def = new DataDef();
                 colName = new StringBuilder(getDataSet().getMetaData().getColumnName(i));
                 def.setName(colName);
-                columnData = getDataSet().getColumn(colName.toString());
+                columnData = this.getDataSet().getColumn(colName.toString());
                 columnResult = cleanVariable(columnData);
                 distinctValues = distVariables(columnResult);
                 distinctCount = countDistVariables(distinctValues,columnResult);
@@ -218,12 +218,11 @@ public class TableData {
             }
             while(data.next());
             this.setDataSet(noBlankDataSet);
+            //Create original data from new dataSet
         }
         catch(SQLException sqle){
             System.out.println("Main | SQLException | deleteBlankValues | " + sqle.getMessage());
         }
-        
-        //return table;
     }
     
     private void setDataSetColName(TableData table, MockResultSet dataSet){

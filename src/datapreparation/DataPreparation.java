@@ -37,11 +37,15 @@ public class DataPreparation {
         * 5.5 User need to define if empty values need to be changed or just to remove them.
         * * 6. Converting Text Variables to Numerical variables. assign a Remap value
         * * 7. Converting Numerical variables to Categorical variables
+        * 8. Make sure that user is agree with the variables
+        * * BEGINNING OF THE STATISTICAL ANALYSIS
         * * 8. Generate Statistic Summary for each variable
-        * 9. 
+        * * 9. Create Contingency tables for all variables
+        * 
+        * ///////NOTE: NEED TO CHECK HOW TO HANDLE STRING VARIABLES TO CATEGORY VARIABLES
         */
         
-        String path = "C:\\Users\\Emmanuel\\Documents\\Maestria\\CSVSamples\\fam_gdl_cp_2.csv";
+        String path = "C:\\Users\\Emmanuel\\Documents\\Maestria\\CSVSamples\\farm_gdl_cp_1.csv";
         CsvReader reader = new CsvReader(path);
         reader.readCsv();
         TableData table = new TableData();
@@ -51,24 +55,34 @@ public class DataPreparation {
             table.setDataSetFromCSV(reader.getColumnHeader(),reader.getDataTable(), reader.getColumnSize());
             table.definitionOp();
             table.validateMonoNullVariables();
-            table.isDataEnough();
-            //defOp.isPopulationEnough(defOp.validateVariables(table));
-            //If user wants to combine two or more distinct values for a specific variable.
-            //Then what we need is the selected variable and the diff values to combine.
-            //NOTE..Think if we better create a class TableOperator
-            //NOTE..Think if we can do a search of blank values and delete the complete row
-            tableNoNull = TableData.cloneTable(table);
-            tableNoNull.deleteBlankValues();
-            ///NOTA NO SE ESTA GENERANDO BIEN LOS VALORES STRING Y NUMERICOS
-            tableNoNull.definitionOp();
-            tableNoNull.createNumAndCatVariables();
-            boolean set = tableNoNull.isDataEnough();
-            //we can check with table with no null or blank is ok with user approval
-            //then implement the edition of the original table in focus with the rows with issues
-            tableNoNull.summerizeColumns();
+            if(table.isDataEnough()){
+                //defOp.isPopulationEnough(defOp.validateVariables(table));
+                //If user wants to combine two or more distinct values for a specific variable.
+                //Then what we need is the selected variable and the diff values to combine.
+                //NOTE..Think if we better create a class TableOperator
+                //NOTE..Think if we can do a search of blank values and delete the complete row
+                tableNoNull = TableData.cloneTable(table);
+                tableNoNull.deleteBlankValues();
+                ///NOTA NO SE ESTA GENERANDO BIEN LOS VALORES STRING Y NUMERICOS
+                tableNoNull.definitionOp();
+                tableNoNull.createNumAndCatVariables();
+                //we can check with table with no null or blank is ok with user approval
+                //then implement the edition of the original table in focus with the rows with issues
+                if(tableNoNull.isDataEnough()){
+                    tableNoNull.summerizeColumns();
+                }
+                else{
+                    System.out.println("Not enough Data please check");
+                }
+            }
+            else{
+                System.out.println("Not enough Data please check");
+            }
+            
+            
         }
         catch(Exception e){
-            System.out.println("Main | SQLException | " + e.getMessage());
+            System.out.println("Main | Exception | " + e.getMessage());
          }
     }
     

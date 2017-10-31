@@ -257,11 +257,44 @@ public class DefOperator {
     
     private void calculateQuartile(DataDef variableDef){
         List<Double> list = variableDef.getNumericValues();
-        Collections.sort(list);
-        int sizeIndex = list.size();
-        variableDef.setMidQuartile(list.get(sizeIndex / 2));
-        variableDef.setLowQuartile(list.get(sizeIndex / 4));
-        variableDef.setLowQuartile(list.get((sizeIndex / 4) * 3));
+        try{ 
+            Collections.sort(list);
+            int sizeIndex = list.size();
+            if(variableDef.getDistHead().size() > 4){
+                variableDef.setMidQuartile(list.get(sizeIndex / 2));
+                variableDef.setLowQuartile(list.get(sizeIndex / 4));
+                variableDef.setUpQuartile(list.get((sizeIndex / 4) * 3));
+            }
+            else if(variableDef.getDistHead().size() == 4 || variableDef.getDistHead().size() == 3){
+                list = castStringToDoubleList(variableDef.getDistHead());
+                Collections.sort(list);
+                variableDef.setMidQuartile(list.get(1));
+                variableDef.setLowQuartile(list.get(0));
+                variableDef.setUpQuartile(list.get(2));
+            }
+            variableDef.setMinDif(getMinimumDiffInValues(list)/2);
+        }
+        catch(Exception e){
+            System.out.println("DefOperator | calculateQuartile | Exception | " + e.getMessage());
+        }
+    }
+    
+    private double getMinimumDiffInValues(List<Double> list){
+        double value = list.get(list.size()-1) - list.get(list.size()-2);
+        for(int i=list.size()-2;i>0;i--){
+            double newValue = list.get(i) - list.get(i-1);
+            if(newValue<value && newValue != 0 && newValue > 0)
+                value = newValue;
+        }
+        return value;
+    }
+    
+    private List<Double> castStringToDoubleList(List<String> list){
+        List<Double> doubleList = new ArrayList<Double>();
+        for(String value:list){
+            doubleList.add(Double.parseDouble(value));
+        }
+        return doubleList;
     }
 
     private double createMean(double[] values){
@@ -326,10 +359,23 @@ public class DefOperator {
     
     //Categorical can be done with quartiles 3 levels and to set Quartiles need to be done in another method
     public void mapToCategorical(DataDef variableDef){
-        List<Double> numericalValues = variableDef.getNumericValues();
-        Map<String,String> map = new HashMap<String,String>();
+        
         if(variableDef.getLowQuartile() == 0.0d && variableDef.getMidQuartile() == 0.0d && variableDef.getUpQuartile() == 0.0d)
             calculateQuartile(variableDef);
+        if(variableDef.getMin() == 0.0d && variableDef.getMax() == 0.0d){
+            variableDef.setMax(createMax(generateArrayDouble(variableDef.getNumericValues())));
+            variableDef.setMin(createMin(generateArrayDouble(variableDef.getNumericValues())));
+        }
+        if(variableDef.getDistHead().size()>4)   
+            categorizeToFour(variableDef);
+        else if(variableDef.getDistHead().size()==4 || variableDef.getDistHead().size()==3)
+            categorizeToThree(variableDef);
+    }
+    
+    private void categorizeToFour(DataDef variableDef){
+        List<Double> numericalValues = variableDef.getNumericValues();
+        Map<String,String> map = new HashMap<String,String>();
+        
         StringBuilder index = new StringBuilder("1");
         StringBuilder tag = new StringBuilder(variableDef.getMin() +" - "+ variableDef.getLowQuartile());
         map.put(index.toString(), tag.toString());
@@ -337,22 +383,40 @@ public class DefOperator {
         tag.delete(0, tag.length());
         
         index.append("2");
-        tag.append((variableDef.getLowQuartile()+1) + " - " + variableDef.getMidQuartile());
+        tag.append((variableDef.getLowQuartile()+variableDef.getMinDif()) + " - " + variableDef.getMidQuartile());
         map.put(index.toString(), tag.toString());
         index.delete(0, index.length());
         tag.delete(0, tag.length());
         
         index.append("3");
-        tag.append((variableDef.getMidQuartile()+1) + " - " + variableDef.getUpQuartile());
+        tag.append((variableDef.getMidQuartile()+variableDef.getMinDif()) + " - " + variableDef.getUpQuartile());
         map.put(index.toString(), tag.toString());
         index.delete(0, index.length());
         tag.delete(0, tag.length());
         
         index.append("4");
-        tag.append((variableDef.getUpQuartile()+1) + " - " + variableDef.getMax());
+        tag.append((variableDef.getUpQuartile()+variableDef.getMinDif()) + " - " + variableDef.getMax());
         map.put(index.toString(), tag.toString());
         
         variableDef.setCategoricalValue(createCategoricalValues(numericalValues,variableDef.getLowQuartile(),variableDef.getMidQuartile(),variableDef.getUpQuartile()));
+        variableDef.setRemapValues(map);
+    }
+    
+    private void categorizeToThree(DataDef variableDef){
+        List<Double> numericalValues = variableDef.getNumericValues();
+        Map<String,String> map = new HashMap<String,String>();
+        
+        StringBuilder index = new StringBuilder("1");
+        StringBuilder tag = new StringBuilder(variableDef.getLowQuartile() +" - "+ variableDef.getMidQuartile());
+        map.put(index.toString(), tag.toString());
+        index.delete(0, index.length());
+        tag.delete(0, tag.length());
+        
+        index.append("2");
+        tag.append((variableDef.getMidQuartile()+variableDef.getMinDif()) + " - " + variableDef.getUpQuartile());
+        map.put(index.toString(), tag.toString());
+        
+        variableDef.setCategoricalValue(createCategoricalValuesToThree(numericalValues,variableDef.getLowQuartile(),variableDef.getMidQuartile(),variableDef.getUpQuartile()));
         variableDef.setRemapValues(map);
     }
     
@@ -402,6 +466,17 @@ public class DefOperator {
                 values.add("3");
             else
                 values.add("4");
+        }
+        return values;
+    }
+
+    private List<String> createCategoricalValuesToThree(List<Double> numericalValues, double lowQuartile, double midQuartile, double upQuartile) {
+        List<String> values = new ArrayList<String>();
+        for(int i=0;i<numericalValues.size();i++){
+            if(numericalValues.get(i)>=lowQuartile && numericalValues.get(i)<=midQuartile)
+                values.add("1");
+            else if(numericalValues.get(i)>midQuartile && numericalValues.get(i)<=upQuartile)
+                values.add("2");
         }
         return values;
     }

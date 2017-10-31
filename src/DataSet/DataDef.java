@@ -35,12 +35,13 @@ public class DataDef {
     private double variance;
     private double populationVariance;
     private double kurtosis;
+    private double minDif;
     private Map<String,Integer> distValues;
-    private List<String> distHead; //Need to check if it's necessary this distinc values'
+    private List<String> distHead; 
     private int population;
     private boolean isEnable;
-    private List<Double> numericValues; //This list is only populated if the variable is numeric
-    private List<String> originalValues; //This list stored the variable
+    private List<Double> numericValues; 
+    private List<String> originalValues; 
     private List<String> categoricalValue;
     private Map<String,String> remapValues; //This characteristic can hold a remap values for the variable holding the same key string as distValues and the other value. NOTE THE REMAP IS FOR ALPHA TO NUMERIC
     
@@ -482,6 +483,20 @@ public class DataDef {
      */
     public void setCategoricalValue(List<String> categoricalValue) {
         this.categoricalValue = categoricalValue;
+    }
+
+    /**
+     * @return the minDif
+     */
+    public double getMinDif() {
+        return minDif;
+    }
+
+    /**
+     * @param minDif the minDif to set
+     */
+    public void setMinDif(double minDif) {
+        this.minDif = minDif;
     }
 
     
