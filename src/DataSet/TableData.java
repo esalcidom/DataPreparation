@@ -79,10 +79,10 @@ public class TableData {
                 def.setDistHead(distinctValues);
                 def.setDistValues(distinctCount);
                 def.setPopulation(columnResult.size());
-                
                 if(def.getVarSubType().equals(VariableSubType.NUMERIC)){
                     defOperator.stringValuesToDouble(def);
                 }
+                defOperator.defineVariableType(def);
                 getDefMap().put(def.getName().toString(),def);
             }
         }

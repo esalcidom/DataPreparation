@@ -41,7 +41,7 @@ public class DataDef {
     private int population;
     private boolean isEnable;
     private List<Double> numericValues; 
-    private List<String> originalValues; 
+    private List<String> originalValues;
     private List<String> categoricalValue;
     private Map<String,String> remapValues; //This characteristic can hold a remap values for the variable holding the same key string as distValues and the other value. NOTE THE REMAP IS FOR ALPHA TO NUMERIC
     

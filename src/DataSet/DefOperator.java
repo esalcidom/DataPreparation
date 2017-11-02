@@ -46,8 +46,13 @@ public class DefOperator {
             list.add(VariableType.CATEGORICAL);
         if(isBinary(variable.getDistHead().size()))
             list.add(VariableType.BINARY);
-        if(isContinuous(variable.getVarSubType()))
+        if(isContinuous(variable.getVarSubType(),variable.getNumericValues()))
             list.add(VariableType.CONTINUOUS);
+        if(isDiscrete(variable.getVarSubType(),variable.getNumericValues()))
+            list.add(VariableType.DISCRETE);
+        if(isNominal(variable.getPopulation(), variable.getDistHead().size()))
+            list.add(VariableType.NOMINAL);
+        variable.setVarType(list);
     }
     
     public void defineVariableSubType(DataDef data, List<String> listValues){
@@ -216,7 +221,9 @@ public class DefOperator {
     
     private boolean isCategorical(int totalPupulation, int totalDiff){
         //NOTE this is onlly a reference
-        if(totalDiff <= (totalPupulation * 0.015))
+        if(totalDiff >= 2 && totalDiff <= 4)
+            return true;
+        else if(totalDiff <= (totalPupulation * 0.015))
             return true;
         else
             return false;
@@ -229,8 +236,36 @@ public class DefOperator {
             return false;
     }
     
-    private boolean isContinuous(VariableSubType value){
-        if(value.equals(VariableSubType.NUMERIC))
+    private boolean isContinuous(VariableSubType subType, List<Double> listValues){
+        if(subType.equals(VariableSubType.NUMERIC) && !doubleListWithDecimals(listValues))
+            return true;
+        else
+            return false;
+    }
+    
+    private boolean isDiscrete(VariableSubType subType, List<Double> listValues){
+        if(subType.equals(VariableSubType.NUMERIC) && doubleListWithDecimals(listValues))
+            return true;
+        else
+            return false;
+    }
+    
+    private boolean doubleListWithDecimals(List<Double> values){
+        for(Double d:values){
+            if(d!=null){
+                if(d % 1 == 0)
+                    continue;
+                else
+                    return false;
+            }
+            else
+                continue;
+        }
+        return true;
+    }
+    
+    private boolean isNominal(int totalPupulation, int totalDiff){
+        if(totalDiff > (totalPupulation * 0.3))
             return true;
         else
             return false;
