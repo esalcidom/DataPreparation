@@ -190,6 +190,26 @@ public class TableData {
             defOperator.mapToNumerical(entry.getValue());
         }
     }
+
+    public List<ContingencyTableDef> createContingencyTableList(){
+        List<ContingencyTableDef> contList = new ArrayList<ContingencyTableDef>();
+        List<DataDef> dataDefList = new ArrayList<DataDef>();
+        for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
+            if(entry.getValue().getVarType().contains(VariableType.CATEGORICAL) || entry.getValue().getCategoricalValue() != null)
+                dataDefList.add(entry.getValue());
+            else
+                continue;
+        }
+        //Iterate with List all the posible combinations to create contingency tables
+        for(int i=0;i<dataDefList.size();i++){
+            for(int j=i+1;j<dataDefList.size();j++){
+                ContingencyTableDef contiTable = new ContingencyTableDef(dataDefList.get(i).getCategoricalValue(), dataDefList.get(j).getCategoricalValue());
+                contiTable.createContingencyTable();
+                contList.add(contiTable);
+            }
+        }
+        return contList;
+    }
     
     public void deleteBlankValues(){
         //check every row in the table and if there is any blank value then delete the row

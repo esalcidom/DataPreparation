@@ -25,6 +25,22 @@ public class StatOperator {
             }
         }
     }
+
+    //calculate all balues for contingency table
+    public void calculateContingencySummary(ContingencyTableDef conTable){
+        
+        double[][] doubleMatrix = conTable.getContingencyTable();
+        weka.core.ContingencyTables wekaTable = new weka.core.ContingencyTables();
+        conTable.setChiSquare(wekaTable.chiVal(doubleMatrix,true));
+        conTable.setPValue(wekaTable.chiSquared(doubleMatrix, true));
+        conTable.setCramersV(wekaTable.CramersV(doubleMatrix));
+        conTable.setCochransCriterion(wekaTable.cochransCriterion(doubleMatrix));
+        conTable.setTauVal(wekaTable.tauVal(doubleMatrix));
+    }
+
+    private List<String> getDistinctValues(List<String> values){
+        return values.stream().distinct().collect(Collectors.toList());
+    }
     
     public StatOperator(){
         

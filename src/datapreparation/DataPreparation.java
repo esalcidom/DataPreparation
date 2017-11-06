@@ -40,7 +40,7 @@ public class DataPreparation {
         * 8. Make sure that user is agree with the variables
         * * BEGINNING OF THE STATISTICAL ANALYSIS
         * * 8. Generate Statistic Summary for each variable
-        * * 9. Create Contingency tables for all variables
+        * * 9. Create Contingency tables for all variables that contaings categorical values
         * 
         * ///////NOTE: NEED TO CHECK HOW TO HANDLE STRING VARIABLES TO CATEGORY VARIABLES
         */
@@ -54,6 +54,7 @@ public class DataPreparation {
         try{
             table.setDataSetFromCSV(reader.getColumnHeader(),reader.getDataTable(), reader.getColumnSize());
             table.definitionOp();
+            table.createNumAndCatVariables();
             table.validateMonoNullVariables();
             if(table.isDataEnough()){
                 //defOp.isPopulationEnough(defOp.validateVariables(table));
@@ -70,6 +71,7 @@ public class DataPreparation {
                 //then implement the edition of the original table in focus with the rows with issues
                 if(tableNoNull.isDataEnough()){
                     tableNoNull.summerizeColumns();
+                    tableNoNull.createContingencyTableList();
                 }
                 else{
                     System.out.println("Not enough Data please check");
