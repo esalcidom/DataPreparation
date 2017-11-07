@@ -38,6 +38,14 @@ public class StatOperator {
         conTable.setCochransCriterion(wekaTable.cochransCriterion(doubleMatrix));
         conTable.setTauVal(wekaTable.tauVal(doubleMatrix));
     }
+    
+    public void calculatePearsonSummary(PearsonCorrelation pearsonC){
+        
+        org.apache.commons.math3.stat.correlation.PearsonsCorrelation pearC = new org.apache.commons.math3.stat.correlation.PearsonsCorrelation(pearsonC.getMatrix());
+        pearsonC.setCorrelationMatrix(pearC.getCorrelationMatrix());
+        pearsonC.setCorrelationPValues(pearC.getCorrelationPValues());
+        pearsonC.setCorrealationStandarError(pearC.getCorrelationStandardErrors());
+    }
 
     private List<String> getDistinctValues(List<String> values){
         return values.stream().distinct().collect(Collectors.toList());

@@ -19,6 +19,7 @@ public class TableData {
     private DefOperator defOperator;
     private StatOperator statOperator;
     private List<ContingencyTableDef> contingencyTableList;
+    private List<PearsonCorrelation> pearsonCorrelationList;
     
     public TableData(){
         defMap = new HashMap<String,DataDef>();
@@ -215,6 +216,23 @@ public class TableData {
         }
     }
     
+    public void createPearsonCorrelationList(){
+         List<DataDef> dataDefList = new ArrayList<DataDef>();
+        for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
+            if((entry.getValue().getVarSubType().equals(VariableSubType.NUMERIC) || entry.getValue().getNumericValues() != null) && entry.getValue().getIsEnable() == true)
+                dataDefList.add(entry.getValue());
+            else
+                continue;
+        }
+        for(int i=0;i<dataDefList.size();i++){
+            for(int j=i+1;j<dataDefList.size();j++){
+                DataSet.PearsonCorrelation pearsonC = new DataSet.PearsonCorrelation(dataDefList.get(i),dataDefList.get(j));
+                statOperator.calculatePearsonSummary(pearsonC);
+                pearsonCorrelationList.add(pearsonC);
+            }
+        }
+    }
+    
     public void deleteBlankValues(){
         //check every row in the table and if there is any blank value then delete the row
         MockResultSet data = this.getDataSet();
@@ -373,6 +391,20 @@ public class TableData {
      */
     public void setStatOperator(StatOperator statOperator) {
         this.statOperator = statOperator;
+    }
+
+    /**
+     * @return the pearsonCorrelationList
+     */
+    public List<PearsonCorrelation> getPearsonCorrelationList() {
+        return pearsonCorrelationList;
+    }
+
+    /**
+     * @param pearsonCorrelationList the pearsonCorrelationList to set
+     */
+    public void setPearsonCorrelationList(List<PearsonCorrelation> pearsonCorrelationList) {
+        this.pearsonCorrelationList = pearsonCorrelationList;
     }
     
 }

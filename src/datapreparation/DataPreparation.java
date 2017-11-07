@@ -72,6 +72,7 @@ public class DataPreparation {
                 if(tableNoNull.isDataEnough()){
                     tableNoNull.summerizeColumns();
                     tableNoNull.createContingencyTableList();
+                    tableNoNull.createPearsonCorrelationList();
                 }
                 else{
                     System.out.println("Not enough Data please check");
