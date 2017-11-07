@@ -54,7 +54,7 @@ public class DataPreparation {
         try{
             table.setDataSetFromCSV(reader.getColumnHeader(),reader.getDataTable(), reader.getColumnSize());
             table.definitionOp();
-            table.createNumAndCatVariables();
+            //table.createNumAndCatVariables();
             table.validateMonoNullVariables();
             if(table.isDataEnough()){
                 //defOp.isPopulationEnough(defOp.validateVariables(table));

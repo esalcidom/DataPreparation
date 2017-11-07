@@ -6,6 +6,7 @@
 package DataSet;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 /**
@@ -32,7 +33,7 @@ public class StatOperator {
         double[][] doubleMatrix = conTable.getContingencyTable();
         weka.core.ContingencyTables wekaTable = new weka.core.ContingencyTables();
         conTable.setChiSquare(wekaTable.chiVal(doubleMatrix,true));
-        conTable.setPValue(wekaTable.chiSquared(doubleMatrix, true));
+        conTable.setpValue(wekaTable.chiSquared(doubleMatrix, true));
         conTable.setCramersV(wekaTable.CramersV(doubleMatrix));
         conTable.setCochransCriterion(wekaTable.cochransCriterion(doubleMatrix));
         conTable.setTauVal(wekaTable.tauVal(doubleMatrix));

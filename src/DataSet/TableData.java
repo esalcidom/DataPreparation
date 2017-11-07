@@ -17,10 +17,13 @@ public class TableData {
     private List<Integer> indexDeletedList;
     private int colSize = 0;
     private DefOperator defOperator;
+    private StatOperator statOperator;
+    private List<ContingencyTableDef> contingencyTableList;
     
     public TableData(){
         defMap = new HashMap<String,DataDef>();
         defOperator = new DefOperator();
+        statOperator = new StatOperator();
         indexDeletedList = new ArrayList<Integer>();
     }
     
@@ -191,11 +194,12 @@ public class TableData {
         }
     }
 
-    public List<ContingencyTableDef> createContingencyTableList(){
-        List<ContingencyTableDef> contList = new ArrayList<ContingencyTableDef>();
+    public void createContingencyTableList(){
+        if(contingencyTableList == null)
+            contingencyTableList = new ArrayList<ContingencyTableDef>();
         List<DataDef> dataDefList = new ArrayList<DataDef>();
         for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
-            if(entry.getValue().getVarType().contains(VariableType.CATEGORICAL) || entry.getValue().getCategoricalValue() != null)
+            if((entry.getValue().getVarType().contains(VariableType.CATEGORICAL) || entry.getValue().getCategoricalValue() != null) && entry.getValue().getIsEnable() == true)
                 dataDefList.add(entry.getValue());
             else
                 continue;
@@ -203,12 +207,12 @@ public class TableData {
         //Iterate with List all the posible combinations to create contingency tables
         for(int i=0;i<dataDefList.size();i++){
             for(int j=i+1;j<dataDefList.size();j++){
-                ContingencyTableDef contiTable = new ContingencyTableDef(dataDefList.get(i).getCategoricalValue(), dataDefList.get(j).getCategoricalValue());
+                ContingencyTableDef contiTable = new ContingencyTableDef(dataDefList.get(i).getCategoricalValue(), dataDefList.get(j).getCategoricalValue(),dataDefList.get(i).getName().toString(),dataDefList.get(j).getName().toString());
                 contiTable.createContingencyTable();
-                contList.add(contiTable);
+                statOperator.calculateContingencySummary(contiTable);
+                contingencyTableList.add(contiTable); 
             }
         }
-        return contList;
     }
     
     public void deleteBlankValues(){
@@ -341,6 +345,34 @@ public class TableData {
      */
     public void setColSize(int colSize) {
         this.colSize = colSize;
+    }
+
+    /**
+     * @return the contingencyTableList
+     */
+    public List<ContingencyTableDef> getContingencyTableList() {
+        return contingencyTableList;
+    }
+
+    /**
+     * @param contingencyTableList the contingencyTableList to set
+     */
+    public void setContingencyTableList(List<ContingencyTableDef> contingencyTableList) {
+        this.contingencyTableList = contingencyTableList;
+    }
+
+    /**
+     * @return the statOperator
+     */
+    public StatOperator getStatOperator() {
+        return statOperator;
+    }
+
+    /**
+     * @param statOperator the statOperator to set
+     */
+    public void setStatOperator(StatOperator statOperator) {
+        this.statOperator = statOperator;
     }
     
 }
