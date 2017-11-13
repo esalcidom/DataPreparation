@@ -75,8 +75,9 @@ public class DataPreparation {
                     tableNoNull.createContingencyTableList();
                     List<DataDef> numericVariables = tableNoNull.getNumericVariableList();
                     //NOTE create pearson correlation and KendallTau take a lot of time
-                    tableNoNull.createPearsonCorrelation(numericVariables);
-                    tableNoNull.createKendallTau(numericVariables);
+                    //tableNoNull.createPearsonCorrelation(numericVariables);
+                    //tableNoNull.createKendallTau(numericVariables);
+                    
                 }
                 else{
                     System.out.println("Not enough Data please check");

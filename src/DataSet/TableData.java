@@ -22,6 +22,8 @@ public class TableData {
     private List<ContingencyTableDef> contingencyTableList;
     private List<PearsonCorrelation> pearsonCorrelationList;
     private List<KendallTau> kendallCorrelation;
+    private List<SimpleReg> simpleRegList;
+    private List<AnovaOneWay> anovaList;
     
     public TableData(){
         defMap = new HashMap<String,DataDef>();
@@ -30,6 +32,7 @@ public class TableData {
         indexDeletedList = new ArrayList<Integer>();
         pearsonCorrelationList = new ArrayList<PearsonCorrelation>();
         kendallCorrelation = new ArrayList<KendallTau>();
+        simpleRegList = new ArrayList<SimpleReg>();
     }
     
     public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{
@@ -236,6 +239,7 @@ public class TableData {
             for(int j=i+1;j<dataDefList.size();j++){
                 KendallTau kendallT = new KendallTau(dataDefList.get(i),dataDefList.get(j));
                 statOperator.calculateKendallTauSummary(kendallT);
+                kendallCorrelation.add(kendallT);
             }
         }
     }
@@ -247,6 +251,26 @@ public class TableData {
                 DataSet.PearsonCorrelation pearsonC = new DataSet.PearsonCorrelation(dataDefList.get(i),dataDefList.get(j));
                 statOperator.calculatePearsonSummary(pearsonC);
                 pearsonCorrelationList.add(pearsonC);
+            }
+        }
+    }
+    
+    public void createSimpleReg(List<DataDef> dataDefList){
+        for(int i=0;i<dataDefList.size();i++){
+            for(int j=i+1;j<dataDefList.size();j++){
+                SimpleReg simpleReg = new SimpleReg(dataDefList.get(i),dataDefList.get(j));
+                statOperator.calculateSimpleRegressionSummary(simpleReg);
+                simpleRegList.add(simpleReg);
+            }
+        }
+    }
+    
+    public void createAnova(List<DataDef> dataDefList){
+        for(int i=0;i<dataDefList.size();i++){
+            for(int j=i+1;j<dataDefList.size();j++){
+                AnovaOneWay anova = new AnovaOneWay(dataDefList.get(i),dataDefList.get(j));
+                statOperator.calculateAnovaSummary(anova);
+                anovaList.add(anova);
             }
         }
     }
@@ -440,6 +464,34 @@ public class TableData {
      */
     public void setKendallCorrelation(List<KendallTau> kendallCorrelation) {
         this.kendallCorrelation = kendallCorrelation;
+    }
+
+    /**
+     * @return the simpleRegList
+     */
+    public List<SimpleReg> getSimpleRegList() {
+        return simpleRegList;
+    }
+
+    /**
+     * @param simpleRegList the simpleRegList to set
+     */
+    public void setSimpleRegList(List<SimpleReg> simpleRegList) {
+        this.simpleRegList = simpleRegList;
+    }
+
+    /**
+     * @return the anovaList
+     */
+    public List<AnovaOneWay> getAnovaList() {
+        return anovaList;
+    }
+
+    /**
+     * @param anovaList the anovaList to set
+     */
+    public void setAnovaList(List<AnovaOneWay> anovaList) {
+        this.anovaList = anovaList;
     }
     
 }

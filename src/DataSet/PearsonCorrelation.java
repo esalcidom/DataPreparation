@@ -52,17 +52,6 @@ public class PearsonCorrelation {
     private void createMatrix(){
         double[] var1Array = DefOperator.generateArrayDouble(var1Values);
         double[] var2Array = DefOperator.generateArrayDouble(var2Values);
-        /*
-        double[] var1Array = new double[var1Values.size()];
-        double[] var2Array = new double[var2Values.size()];
-        
-        for(int i=0;i<var1Array.length;i++){
-            var1Array[i] = var1Values.get(i);
-            var2Array[i] = var2Values.get(i);
-        }
-        */
-        
-        
         double[][] matrixResult = {var1Array,var2Array};
         setMatrix(matrixResult);
     }

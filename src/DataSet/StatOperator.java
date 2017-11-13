@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.apache.commons.math3.stat.inference.OneWayAnova;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 /**
  *
@@ -52,8 +54,37 @@ public class StatOperator {
         org.apache.commons.math3.stat.correlation.PearsonsCorrelation pearC = new org.apache.commons.math3.stat.correlation.PearsonsCorrelation(pearsonC.getMatrix());
         pearsonC.setCorrelationMatrix(pearC.getCorrelationMatrix());
         pearsonC.setCorrelation(pearC.correlation(DefOperator.generateArrayDouble(pearsonC.getVar1Values()),DefOperator.generateArrayDouble(pearsonC.getVar2Values())));
-        //pearsonC.setCorrelationPValues(pearC.getCorrelationPValues());
+        pearsonC.setCorrelationPValues(pearC.getCorrelationPValues());
         pearsonC.setCorrealationStandarError(pearC.getCorrelationStandardErrors());
+    }
+    
+    public void calculateSimpleRegressionSummary(SimpleReg simpleReg){
+        SimpleRegression simReg = new SimpleRegression();
+        simReg.addData(simpleReg.getMatrix());
+        simpleReg.setIntercept(simReg.getIntercept());
+        simpleReg.setInterceptStErr(simReg.getInterceptStdErr());
+        simpleReg.setMeanSquareErr(simReg.getMeanSquareError());
+        simpleReg.setrPearsonCorrelation(simReg.getR());
+        simpleReg.setRegressionSumSquares(simReg.getRegressionSumSquares());
+        simpleReg.setrSquare(simReg.getRSquare());
+        simpleReg.setSignificance(simReg.getSignificance());
+        simpleReg.setSlope(simReg.getSlope());
+        simpleReg.setSlopeConfidenceInterval(simReg.getSlopeConfidenceInterval());
+        simpleReg.setSlopeStErr(simReg.getSlopeStdErr());
+        simpleReg.setSumCrossProducts(simReg.getSumOfCrossProducts());
+        simpleReg.setSumSquareErr(simReg.getSumSquaredErrors());
+        simpleReg.setTotalSumSquares(simReg.getTotalSumSquares());
+        simpleReg.setxSumSquares(simReg.getXSumSquares());
+    }
+    
+    public void calculateAnovaSummary(AnovaOneWay anova){
+        OneWayAnova oAnova = new OneWayAnova();
+        List<double[]> variables = new ArrayList<double[]>();
+        variables.add(DefOperator.generateArrayDouble(anova.getVar1Values()));
+        variables.add(DefOperator.generateArrayDouble(anova.getVar2Values()));
+        anova.setfValue(oAnova.anovaFValue(variables));
+        anova.setpValue(oAnova.anovaPValue(variables));
+        anova.setIsTestAlpha(oAnova.anovaTest(variables, 0.05d));
     }
 
     private List<String> getDistinctValues(List<String> values){

@@ -6,44 +6,34 @@
 package DataSet;
 
 import java.util.List;
-import org.apache.commons.math3.linear.RealMatrix;
 
 /**
  *
  * @author Emmanuel
  */
-public class KendallTau {
+public class AnovaOneWay {
     private String var1Name;
     private String var2Name;
     private List<Double> var1Values;
     private List<Double> var2Values;
-    private double[][] matrix;
-    private double correlation;
-    private RealMatrix correlationMatrix;
+    private double fValue;
+    private double pValue;
+    private boolean isTestAlpha;
     
-    public KendallTau(){
+    public AnovaOneWay(){
         
     }
-    public KendallTau(List<Double> var1, List<Double> var2, String var1Name, String var2Name){
+    public AnovaOneWay(List<Double> var1, List<Double> var2, String var1Name, String var2Name){
         var1Values = var1;
         var2Values = var2;
         this.var1Name = var1Name;
         this.var2Name = var2Name;
-        createMatrix();
     }
-    public KendallTau(DataDef var1, DataDef var2){
+    public AnovaOneWay(DataDef var1, DataDef var2){
         var1Values = var1.getNumericValues();
         var2Values = var2.getNumericValues();
         var1Name = var1.getName().toString();
         var2Name = var2.getName().toString();
-        createMatrix();
-    }
-    
-    private void createMatrix(){
-        double[] var1Array = DefOperator.generateArrayDouble(var1Values);
-        double[] var2Array = DefOperator.generateArrayDouble(var2Values);
-        double[][] matrixResult = {var1Array,var2Array};
-        setMatrix(matrixResult);
     }
 
     /**
@@ -103,44 +93,46 @@ public class KendallTau {
     }
 
     /**
-     * @return the correlation
+     * @return the fValue
      */
-    public double getCorrelation() {
-        return correlation;
+    public double getfValue() {
+        return fValue;
     }
 
     /**
-     * @param correlation the correlation to set
+     * @param fValue the fValue to set
      */
-    public void setCorrelation(double correlation) {
-        this.correlation = correlation;
+    public void setfValue(double fValue) {
+        this.fValue = fValue;
     }
 
     /**
-     * @return the correlationMatrix
+     * @return the pValue
      */
-    public RealMatrix getCorrelationMatrix() {
-        return correlationMatrix;
+    public double getpValue() {
+        return pValue;
     }
 
     /**
-     * @param correlationMatrix the correlationMatrix to set
+     * @param pValue the pValue to set
      */
-    public void setCorrelationMatrix(RealMatrix correlationMatrix) {
-        this.correlationMatrix = correlationMatrix;
+    public void setpValue(double pValue) {
+        this.pValue = pValue;
     }
 
     /**
-     * @return the matrix
+     * @return the isTestAlpha
      */
-    public double[][] getMatrix() {
-        return matrix;
+    public boolean isIsTestAlpha() {
+        return isTestAlpha;
     }
 
     /**
-     * @param matrix the matrix to set
+     * @param isTestAlpha the isTestAlpha to set
      */
-    public void setMatrix(double[][] matrix) {
-        this.matrix = matrix;
+    public void setIsTestAlpha(boolean isTestAlpha) {
+        this.isTestAlpha = isTestAlpha;
     }
+    
+    
 }
