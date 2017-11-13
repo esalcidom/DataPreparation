@@ -19,6 +19,7 @@ public class PearsonCorrelation {
     private List<Double> var1Values;
     private List<Double> var2Values;
     private double[][] matrix;
+    private double correlation;
     private RealMatrix correlationMatrix;
     private RealMatrix correlationPValues;
     private RealMatrix correalationStandarError;
@@ -30,11 +31,18 @@ public class PearsonCorrelation {
         this.var2Name = var2Name;
         createMatrix();
     }
-    public PearsonCorrelation(DataDef row, DataDef col){
-        var1Values = row.getNumericValues();
-        var2Values = col.getNumericValues();
-        var1Name = row.getName().toString();
-        var2Name = col.getName().toString();
+    public PearsonCorrelation(DataDef var1, DataDef var2){
+        if(var1.getVarSubType().equals(VariableSubType.NUMERIC))
+            var1Values = DefOperator.generateStringListToDouble(var1.getOriginalValues());
+        else
+            var1Values = var1.getNumericValues();
+        if(var2.getVarSubType().equals(VariableSubType.NUMERIC))
+            var2Values = DefOperator.generateStringListToDouble(var2.getOriginalValues());
+        else
+            var2Values = var2.getNumericValues();
+        
+        var1Name = var1.getName().toString();
+        var2Name = var2.getName().toString();
         createMatrix();
     }
     public PearsonCorrelation(){
@@ -42,13 +50,19 @@ public class PearsonCorrelation {
     }
 
     private void createMatrix(){
+        double[] var1Array = DefOperator.generateArrayDouble(var1Values);
+        double[] var2Array = DefOperator.generateArrayDouble(var2Values);
+        /*
         double[] var1Array = new double[var1Values.size()];
         double[] var2Array = new double[var2Values.size()];
+        
         for(int i=0;i<var1Array.length;i++){
             var1Array[i] = var1Values.get(i);
             var2Array[i] = var2Values.get(i);
         }
-
+        */
+        
+        
         double[][] matrixResult = {var1Array,var2Array};
         setMatrix(matrixResult);
     }
@@ -163,5 +177,19 @@ public class PearsonCorrelation {
      */
     public void setMatrix(double[][] matrix) {
         this.matrix = matrix;
+    }
+
+    /**
+     * @return the correlation
+     */
+    public double getCorrelation() {
+        return correlation;
+    }
+
+    /**
+     * @param correlation the correlation to set
+     */
+    public void setCorrelation(double correlation) {
+        this.correlation = correlation;
     }
 }

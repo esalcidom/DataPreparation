@@ -6,6 +6,7 @@ package DataSet;
 import com.mockrunner.mock.jdbc.MockResultSet;
 import java.sql.*;
 import java.util.*;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 /**
  *
  * @author Emmanuel
@@ -20,12 +21,15 @@ public class TableData {
     private StatOperator statOperator;
     private List<ContingencyTableDef> contingencyTableList;
     private List<PearsonCorrelation> pearsonCorrelationList;
+    private List<KendallTau> kendallCorrelation;
     
     public TableData(){
         defMap = new HashMap<String,DataDef>();
         defOperator = new DefOperator();
         statOperator = new StatOperator();
         indexDeletedList = new ArrayList<Integer>();
+        pearsonCorrelationList = new ArrayList<PearsonCorrelation>();
+        kendallCorrelation = new ArrayList<KendallTau>();
     }
     
     public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{
@@ -216,14 +220,28 @@ public class TableData {
         }
     }
     
-    public void createPearsonCorrelationList(){
-         List<DataDef> dataDefList = new ArrayList<DataDef>();
+    public List<DataDef> getNumericVariableList(){
+        List<DataDef> dataDefList = new ArrayList<DataDef>();
         for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
             if((entry.getValue().getVarSubType().equals(VariableSubType.NUMERIC) || entry.getValue().getNumericValues() != null) && entry.getValue().getIsEnable() == true)
                 dataDefList.add(entry.getValue());
             else
                 continue;
         }
+        return dataDefList;
+    }
+    
+    public void createKendallTau(List<DataDef> dataDefList){
+        for(int i=0;i<dataDefList.size();i++){
+            for(int j=i+1;j<dataDefList.size();j++){
+                KendallTau kendallT = new KendallTau(dataDefList.get(i),dataDefList.get(j));
+                statOperator.calculateKendallTauSummary(kendallT);
+            }
+        }
+    }
+    
+    public void createPearsonCorrelation(List<DataDef> dataDefList){
+        
         for(int i=0;i<dataDefList.size();i++){
             for(int j=i+1;j<dataDefList.size();j++){
                 DataSet.PearsonCorrelation pearsonC = new DataSet.PearsonCorrelation(dataDefList.get(i),dataDefList.get(j));
@@ -237,7 +255,7 @@ public class TableData {
         //check every row in the table and if there is any blank value then delete the row
         MockResultSet data = this.getDataSet();
         MockResultSet noBlankDataSet = new MockResultSet("clonedNoBlankDataSet");
-        setDataSetColName(this,noBlankDataSet);
+        setDataSetColName(noBlankDataSet);
         int row = 1;
         List listRow = null;
         try{
@@ -267,11 +285,13 @@ public class TableData {
         }
     }
     
-    private void setDataSetColName(TableData table, MockResultSet dataSet){
-        HashMap<String,DataDef> dataDef = (HashMap<String,DataDef>)table.getDefMap();
+    private void setDataSetColName(MockResultSet dataSet){
+        HashMap<String,DataDef> dataDef = (HashMap<String,DataDef>)this.getDefMap();
         for(Map.Entry<String, DataDef> entry : dataDef.entrySet()){
-            String col = entry.getKey();
-            dataSet.addColumn(col);
+            if(entry.getValue().getIsEnable()){
+                String col = entry.getKey();
+                dataSet.addColumn(col);
+            }
         }
     }
     
@@ -347,7 +367,8 @@ public class TableData {
     
     public void summerizeColumns(){
         for(Map.Entry<String, DataDef> entry : getDefMap().entrySet()){
-            defOperator.summerizeData(entry.getValue());
+            if(entry.getValue().getIsEnable())
+                defOperator.summerizeData(entry.getValue());
         }
     }
 
@@ -405,6 +426,20 @@ public class TableData {
      */
     public void setPearsonCorrelationList(List<PearsonCorrelation> pearsonCorrelationList) {
         this.pearsonCorrelationList = pearsonCorrelationList;
+    }
+
+    /**
+     * @return the kendallCorrelation
+     */
+    public List<KendallTau> getKendallCorrelation() {
+        return kendallCorrelation;
+    }
+
+    /**
+     * @param kendallCorrelation the kendallCorrelation to set
+     */
+    public void setKendallCorrelation(List<KendallTau> kendallCorrelation) {
+        this.kendallCorrelation = kendallCorrelation;
     }
     
 }

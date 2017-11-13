@@ -15,9 +15,12 @@
             <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/DataInputRead/JDBAReader.java</file>
             <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/DataSet/DataDef.java</file>
             <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/DataSet/DefOperator.java</file>
+            <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/DataSet/KendallTau.java</file>
             <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/DataSet/StatOperator.java</file>
+            <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/DataSet/PearsonCorrelation.java</file>
             <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/datapreparation/DataPreparation.java</file>
             <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/DataSet/VariableType.java</file>
+            <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/DataSet/ContingencyTableDef.java</file>
             <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/DataInputRead/CsvReader.java</file>
             <file>file:/C:/Users/Emmanuel/Documents/NetBeansProjects/DataPreparation/src/DataSet/TableData.java</file>
         </group>

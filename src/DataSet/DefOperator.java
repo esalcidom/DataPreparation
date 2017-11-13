@@ -288,6 +288,7 @@ public class DefOperator {
         variableDef.setStandrDev(createSD(data));
         variableDef.setSkewness(createSkewness(data));
         variableDef.setKurtosis(createKurtosis(data));
+        variableDef.setStandrErr(createSE(variableDef.getStandrDev(),data.length));
     }
     
     private void calculateQuartile(DataDef variableDef){
@@ -296,7 +297,7 @@ public class DefOperator {
             Collections.sort(list);
             int sizeIndex = list.size();
             if(variableDef.getDistHead().size() > 4){
-                variableDef.setMidQuartile(list.get(sizeIndex / 2));
+                variableDef.setMidQuartile(list.get(sizeIndex / 2)); 
                 variableDef.setLowQuartile(list.get(sizeIndex / 4));
                 variableDef.setUpQuartile(list.get((sizeIndex / 4) * 3));
             }
@@ -387,8 +388,21 @@ public class DefOperator {
         return kurtosis.evaluate(values,0,values.length);
     }
     
-    private double[] generateArrayDouble(List<Double> values){
+    public static double[] generateArrayDouble(List<Double> values){
         return values.stream().mapToDouble(Double::doubleValue).toArray();
+    }
+    
+    public static List<Double> generateStringListToDouble(List<String> list){
+        List<Double> doubleList = new ArrayList<Double>();
+        for(String s : list){
+            doubleList.add(Double.parseDouble(s));
+        }
+        return doubleList;
+    }
+    
+    private double createSE(double sd, double n){
+        double se = sd/Math.sqrt(n);
+        return se;
     }
     ////////////////END SUMMERIZE OPERATION
     

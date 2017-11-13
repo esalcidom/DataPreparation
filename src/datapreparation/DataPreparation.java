@@ -40,8 +40,9 @@ public class DataPreparation {
         * 8. Make sure that user is agree with the variables
         * * BEGINNING OF THE STATISTICAL ANALYSIS
         * * 8. Generate Statistic Summary for each variable
-        * * 9. Create Contingency tables for all variables that contaings categorical values
-        * 
+        * * 9. Create Contingency tables for all variables that contains categorical values
+        * 10. Calculate Lineal regression
+        * 11. Calculate ANOVA
         * ///////NOTE: NEED TO CHECK HOW TO HANDLE STRING VARIABLES TO CATEGORY VARIABLES
         */
         
@@ -72,7 +73,10 @@ public class DataPreparation {
                 if(tableNoNull.isDataEnough()){
                     tableNoNull.summerizeColumns();
                     tableNoNull.createContingencyTableList();
-                    tableNoNull.createPearsonCorrelationList();
+                    List<DataDef> numericVariables = tableNoNull.getNumericVariableList();
+                    //NOTE create pearson correlation and KendallTau take a lot of time
+                    tableNoNull.createPearsonCorrelation(numericVariables);
+                    tableNoNull.createKendallTau(numericVariables);
                 }
                 else{
                     System.out.println("Not enough Data please check");

@@ -7,6 +7,7 @@ package DataSet;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 /**
@@ -39,11 +40,19 @@ public class StatOperator {
         conTable.setTauVal(wekaTable.tauVal(doubleMatrix));
     }
     
+    //calculate kendall tau correlation
+    public void calculateKendallTauSummary(KendallTau kTau){
+        KendallsCorrelation kCorr = new KendallsCorrelation(kTau.getMatrix());
+        kTau.setCorrelation(kCorr.correlation(DefOperator.generateArrayDouble(kTau.getVar1Values()),DefOperator.generateArrayDouble(kTau.getVar2Values())));
+        kTau.setCorrelationMatrix(kCorr.computeCorrelationMatrix(kTau.getMatrix()));
+    }
+    
     public void calculatePearsonSummary(PearsonCorrelation pearsonC){
         
         org.apache.commons.math3.stat.correlation.PearsonsCorrelation pearC = new org.apache.commons.math3.stat.correlation.PearsonsCorrelation(pearsonC.getMatrix());
         pearsonC.setCorrelationMatrix(pearC.getCorrelationMatrix());
-        pearsonC.setCorrelationPValues(pearC.getCorrelationPValues());
+        pearsonC.setCorrelation(pearC.correlation(DefOperator.generateArrayDouble(pearsonC.getVar1Values()),DefOperator.generateArrayDouble(pearsonC.getVar2Values())));
+        //pearsonC.setCorrelationPValues(pearC.getCorrelationPValues());
         pearsonC.setCorrealationStandarError(pearC.getCorrelationStandardErrors());
     }
 

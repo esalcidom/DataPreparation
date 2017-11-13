@@ -25,6 +25,7 @@ public class DataDef {
     private double median;
     private double skewness;
     private double standrDev;
+    private double standrErr;
     private double range;
     private double max;
     private double min;
@@ -497,6 +498,20 @@ public class DataDef {
      */
     public void setMinDif(double minDif) {
         this.minDif = minDif;
+    }
+
+    /**
+     * @return the standrErr
+     */
+    public double getStandrErr() {
+        return standrErr;
+    }
+
+    /**
+     * @param standrErr the standrErr to set
+     */
+    public void setStandrErr(double standrErr) {
+        this.standrErr = standrErr;
     }
 
     
