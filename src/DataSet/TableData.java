@@ -24,6 +24,7 @@ public class TableData {
     private List<KendallTau> kendallCorrelation;
     private List<SimpleReg> simpleRegList;
     private List<AnovaOneWay> anovaList;
+    private List<KMeans> kMeansList;
     
     public TableData(){
         defMap = new HashMap<String,DataDef>();
@@ -234,6 +235,17 @@ public class TableData {
         return dataDefList;
     }
     
+    public List<DataDef> getAlphaVariables(){
+        List<DataDef> dataDefList = new ArrayList<DataDef>();
+        for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
+            if(entry.getValue().getVarSubType().equals(VariableSubType.ALPHA) || (entry.getValue().getVarSubType().equals(VariableSubType.ALPHANUMERIC) || entry.getValue().getNumericValues() != null) && entry.getValue().getIsEnable() == true)
+                dataDefList.add(entry.getValue());
+            else
+                continue;
+        }
+        return dataDefList;
+    }
+    
     public void createKendallTau(List<DataDef> dataDefList){
         for(int i=0;i<dataDefList.size();i++){
             for(int j=i+1;j<dataDefList.size();j++){
@@ -241,6 +253,14 @@ public class TableData {
                 statOperator.calculateKendallTauSummary(kendallT);
                 kendallCorrelation.add(kendallT);
             }
+        }
+    }
+    
+    public void createKMeans(List<DataDef> dataDefList){
+        for(int i=0;i<dataDefList.size();i++){
+            KMeans kMean = new KMeans(dataDefList.get(i));
+            statOperator.calculateKMeanSummary(kMean);
+            kMeansList.add(kMean);
         }
     }
     
@@ -271,6 +291,29 @@ public class TableData {
                 AnovaOneWay anova = new AnovaOneWay(dataDefList.get(i),dataDefList.get(j));
                 statOperator.calculateAnovaSummary(anova);
                 anovaList.add(anova);
+            }
+        }
+    }
+    
+    public void detectOutliers(){
+        for(Map.Entry<String, DataDef> entry : defMap.entrySet()){
+            if(entry.getValue().getIsEnable()){
+                double low = entry.getValue().getLowIqr();
+                double high = entry.getValue().getHighIqr();
+                List<Integer> index = new ArrayList<Integer>();
+                List<Double> variableData = new ArrayList<Double>();
+                if((entry.getValue().getVarSubType().equals(VariableSubType.NUMERIC)))
+                    variableData = DefOperator.generateStringListToDouble(entry.getValue().getOriginalValues());  
+                else if(entry.getValue().getVarSubType().equals(VariableSubType.ALPHA) || entry.getValue().getVarSubType().equals(VariableSubType.ALPHANUMERIC))
+                    variableData = entry.getValue().getNumericValues();
+                
+                for(int i=0;i<variableData.size();i++){
+                    if(variableData.get(i)<low)
+                        index.add(i);
+                    else if(variableData.get(i)>high)
+                        index.add(i);
+                }
+                entry.getValue().setIndexOutliersList(index);
             }
         }
     }
@@ -493,5 +536,5 @@ public class TableData {
     public void setAnovaList(List<AnovaOneWay> anovaList) {
         this.anovaList = anovaList;
     }
-    
+
 }

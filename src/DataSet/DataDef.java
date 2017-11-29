@@ -21,7 +21,11 @@ public class DataDef {
     private double[] mode;
     private double geometricMean;
     private double[] normilizeData;
-    private double percentil;
+    private double q1;
+    private double q3;
+    private double iqr;
+    private double lowIqr;
+    private double highIqr;
     private double median;
     private double skewness;
     private double standrDev;
@@ -35,12 +39,14 @@ public class DataDef {
     private double rangeQuartile;
     private double variance;
     private double populationVariance;
+    private double coefficientVariation;
     private double kurtosis;
     private double minDif;
     private Map<String,Integer> distValues;
     private List<String> distHead; 
     private int population;
     private boolean isEnable;
+    private List<Integer> indexOutliersList;
     private List<Double> numericValues; 
     private List<String> originalValues;
     private List<String> categoricalValue;
@@ -445,20 +451,6 @@ public class DataDef {
     }
 
     /**
-     * @return the percentil
-     */
-    public double getPercentil() {
-        return percentil;
-    }
-
-    /**
-     * @param percentil the percentil to set
-     */
-    public void setPercentil(double percentil) {
-        this.percentil = percentil;
-    }
-
-    /**
      * @return the populationVariance
      */
     public double getPopulationVariance() {
@@ -512,6 +504,104 @@ public class DataDef {
      */
     public void setStandrErr(double standrErr) {
         this.standrErr = standrErr;
+    }
+
+    /**
+     * @return the coefficientVariation
+     */
+    public double getCoefficientVariation() {
+        return coefficientVariation;
+    }
+
+    /**
+     * @param coefficientVariation the coefficientVariation to set
+     */
+    public void setCoefficientVariation(double coefficientVariation) {
+        this.coefficientVariation = coefficientVariation;
+    }
+
+    /**
+     * @return the q1
+     */
+    public double getQ1() {
+        return q1;
+    }
+
+    /**
+     * @param q1 the q1 to set
+     */
+    public void setQ1(double q1) {
+        this.q1 = q1;
+    }
+
+    /**
+     * @return the q3
+     */
+    public double getQ3() {
+        return q3;
+    }
+
+    /**
+     * @param q3 the q3 to set
+     */
+    public void setQ3(double q3) {
+        this.q3 = q3;
+    }
+
+    /**
+     * @return the iqr
+     */
+    public double getIqr() {
+        return iqr;
+    }
+
+    /**
+     * @param iqr the iqr to set
+     */
+    public void setIqr(double iqr) {
+        this.iqr = iqr;
+    }
+
+    /**
+     * @return the lowIqr
+     */
+    public double getLowIqr() {
+        return lowIqr;
+    }
+
+    /**
+     * @param lowIqr the lowIqr to set
+     */
+    public void setLowIqr(double lowIqr) {
+        this.lowIqr = lowIqr;
+    }
+
+    /**
+     * @return the highIqr
+     */
+    public double getHighIqr() {
+        return highIqr;
+    }
+
+    /**
+     * @param highIqr the highIqr to set
+     */
+    public void setHighIqr(double highIqr) {
+        this.highIqr = highIqr;
+    }
+
+    /**
+     * @return the indexOutliersList
+     */
+    public List<Integer> getIndexOutliersList() {
+        return indexOutliersList;
+    }
+
+    /**
+     * @param indexOutliersList the indexOutliersList to set
+     */
+    public void setIndexOutliersList(List<Integer> indexOutliersList) {
+        this.indexOutliersList = indexOutliersList;
     }
 
     

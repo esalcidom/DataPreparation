@@ -44,6 +44,8 @@ public class DataPreparation {
         * 10. Calculate Lineal regression
         * 11. Calculate ANOVA
         * ///////NOTE: NEED TO CHECK HOW TO HANDLE STRING VARIABLES TO CATEGORY VARIABLES
+        * 12. Clostering k-Means
+        * 13. Detect variable distribution???????
         */
         
         String path = "C:\\Users\\Emmanuel\\Documents\\Maestria\\CSVSamples\\farm_gdl_cp_1.csv";
@@ -72,11 +74,15 @@ public class DataPreparation {
                 //then implement the edition of the original table in focus with the rows with issues
                 if(tableNoNull.isDataEnough()){
                     tableNoNull.summerizeColumns();
+                    tableNoNull.detectOutliers();
                     tableNoNull.createContingencyTableList();
+                    List<DataDef> alphaVariables = tableNoNull.getAlphaVariables();
                     List<DataDef> numericVariables = tableNoNull.getNumericVariableList();
                     //NOTE create pearson correlation and KendallTau take a lot of time
                     //tableNoNull.createPearsonCorrelation(numericVariables);
                     //tableNoNull.createKendallTau(numericVariables);
+                    //Cannot implement Clustering
+                    //tableNoNull.createKMeans(numericVariables);
                     
                 }
                 else{

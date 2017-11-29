@@ -7,6 +7,7 @@ package DataSet;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.apache.commons.math3.stat.inference.OneWayAnova;
@@ -85,6 +86,11 @@ public class StatOperator {
         anova.setfValue(oAnova.anovaFValue(variables));
         anova.setpValue(oAnova.anovaPValue(variables));
         anova.setIsTestAlpha(oAnova.anovaTest(variables, 0.05d));
+    }
+    
+    public void calculateKMeanSummary(KMeans kMeans){
+        KMeansPlusPlusClusterer kMeanPlus = new KMeansPlusPlusClusterer(4);
+        kMeans.setCluster(kMeanPlus.cluster(kMeans.getVarValues()));
     }
 
     private List<String> getDistinctValues(List<String> values){

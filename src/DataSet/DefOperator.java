@@ -282,13 +282,18 @@ public class DefOperator {
         variableDef.setMax(createMax(data));
         variableDef.setMin(createMin(data));
         variableDef.setNormilizeData(createNormalize(data));
-        variableDef.setPercentil(createPercentil(data));
+        variableDef.setQ1(createQ1(data));
+        variableDef.setQ3(createQ3(data));
+        variableDef.setIqr(createIqr(variableDef.getQ1(),variableDef.getQ3()));
+        variableDef.setLowIqr(createLowIqr(variableDef.getQ1(), variableDef.getIqr())); 
+        variableDef.setHighIqr(createHighIqr(variableDef.getQ3(), variableDef.getIqr())); 
         variableDef.setPopulationVariance(createpopulationVariance(data, variableDef.getMean()));
         variableDef.setVariance(createVariance(data,  variableDef.getMean()));
         variableDef.setStandrDev(createSD(data));
         variableDef.setSkewness(createSkewness(data));
         variableDef.setKurtosis(createKurtosis(data));
         variableDef.setStandrErr(createSE(variableDef.getStandrDev(),data.length));
+        variableDef.setCoefficientVariation(createCoefficientVariation(variableDef.getStandrDev(),variableDef.getMean()));
     }
     
     private void calculateQuartile(DataDef variableDef){
@@ -357,12 +362,11 @@ public class DefOperator {
         return StatUtils.normalize(values);
     }
 
-    //Don't know if percentile is neccessary
-    private double createPercentil(double[] values){
-        return StatUtils.percentile(values,95.0);
+    private double createQ1(double[] values){
+        return StatUtils.percentile(values,25);
     }
-    private double createPercentil(double[] values, double p){
-        return StatUtils.percentile(values,p);
+    private double createQ3(double[] values){
+        return StatUtils.percentile(values,75);
     }
     
     private double createpopulationVariance(double[] values, double mean){
@@ -403,6 +407,23 @@ public class DefOperator {
     private double createSE(double sd, double n){
         double se = sd/Math.sqrt(n);
         return se;
+    }
+    
+    private double createCoefficientVariation(double sd, double mean){
+        double cv = sd/mean;
+        return cv;
+    }
+    
+    private double createIqr(double q1,double q3){
+        return q3 - q1;
+    }
+    
+    private double createLowIqr(double q1, double iqr){
+        return q1 - (iqr*1.5);
+    }
+    
+    private double createHighIqr(double q3, double iqr){
+        return q3 + (iqr*1.5);
     }
     ////////////////END SUMMERIZE OPERATION
     
