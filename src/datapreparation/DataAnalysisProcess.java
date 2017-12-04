@@ -18,6 +18,7 @@ import java.util.stream.*;
 public class DataAnalysisProcess {
     
     private String filePath;
+    private DataAnalyser dataAnalyser;
     
     public DataAnalysisProcess(String path){
         filePath = path;
@@ -64,7 +65,8 @@ public class DataAnalysisProcess {
                     //tableNoNull.createKendallTau(numericVariables);
                     //Cannot implement Clustering
                     //tableNoNull.createKMeans(numericVariables);
-                    
+                    dataAnalyser = new DataAnalyser(tableNoNull);
+                    dataAnalyser.startAnalyseTable();
                 }
                 else{
                     System.out.println("Not enough data to analyse please check");
@@ -73,7 +75,6 @@ public class DataAnalysisProcess {
             else{
                 System.out.println("Data free of null and blank values are not enough data to analyse please check");
             }
-            
             
         }
         catch(Exception e){
