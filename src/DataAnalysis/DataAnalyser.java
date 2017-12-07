@@ -5,10 +5,13 @@
  */
 package DataAnalysis;
 
+import DataSet.ContingencyTableDef;
 import DataSet.DataDef;
 import DataSet.TableData;
+import DataSet.VariableSubType;
 import DataSet.VariableType;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,12 +34,21 @@ public class DataAnalyser {
                 DataDef dataDef = entry.getValue();
                 writeVariableSummary(dataDef);
         }
+    }
+    
+    public void startRelationAnalysis(){
+        for(ContingencyTableDef entry: tableData.getContingencyTableList()){
+            writeContingencySummary(entry);
+        }
+    }
+    
+    public void closeFile(){
         try{
             outputResult.closeFile();
         }
         catch(IOException iOE){
                 System.out.println("DataAnalyser | startAnalyseTable | IOException | " + iOE.getMessage());
-        }   
+        }
     }
     
     private String analyseSymmetry(double skewness, double kurtosis){
@@ -63,6 +75,65 @@ public class DataAnalyser {
         return line;
     }
     
+    private void validateDataSummaryValue(int value, String title) throws IOException{
+        outputResult.writeLine(title);
+        outputResult.writeLine(" "+value);
+    }
+    
+    private void validateDataSummaryValue(boolean value, String title) throws IOException{
+        outputResult.writeLine(title);
+        outputResult.writeLine(" "+value);
+    }
+    
+    private void validateDataSummaryValue(Double value, String title) throws IOException{
+        if(value != null){
+            outputResult.writeLine(title);
+            outputResult.writeLine(" "+String.valueOf(value));
+        }
+    }
+    
+    private void validateDataSummaryValue(VariableType value, String title) throws IOException{
+        if(value != null){
+            outputResult.writeLine(title);
+            outputResult.writeLine(" "+value.toString());
+        }
+    }
+    
+    private void validateDataSummaryValue(VariableSubType value, String title) throws IOException{
+        if(value != null){
+            outputResult.writeLine(title);
+            outputResult.writeLine(" "+value.toString());
+        }
+    }
+    
+    private void validateDataSummaryValue(double[] value, String title) throws IOException{
+        if(value != null){
+            outputResult.writeLine(title);
+            outputResult.printDoubleArray(value);
+        }
+    }
+    
+    private void validateDataSummaryValue(double[][] value, String title) throws IOException{
+        if(value != null){
+            outputResult.writeLine(title);
+            outputResult.printDouble2DArray(value);
+        }
+    }
+    
+    private void validateDataSummaryValue(Map value, String title) throws IOException{
+        if(value != null){
+            outputResult.writeLine(title);
+            outputResult.printDistinctMap(value);
+        }
+    }
+    
+    private void validateDataSummaryValue(List value, String title) throws IOException{
+        if(value != null){
+            outputResult.writeLine(title);
+            outputResult.printList(value);
+        }
+    }
+    
     private void writeVariableSummary(DataDef data){
         try{
             outputResult.printSeparator();
@@ -72,92 +143,45 @@ public class DataAnalyser {
             outputResult.writeLine("Variable Types: ");
             for(VariableType type:data.getVarType())
                 outputResult.writeLine(" "+type.toString());
-            if(data.getMapedType() != null){
-                outputResult.writeLine("Variable maped to:");
-                outputResult.writeLine(" "+data.getMapedType().toString());
-            }
-            if(data.getVarSubType() != null){
-                outputResult.writeLine("Variable subtype:");
-                outputResult.writeLine(" "+data.getVarSubType().toString());
-            }
-            outputResult.writeLine("Mean | Sum of numbers divided by N");
-            outputResult.writeLine(" "+String.valueOf(data.getMean()));
-            outputResult.writeLine("Geometric Mean | Nth root of product of all numbers");
-            outputResult.writeLine(" "+String.valueOf(data.getGeometricMean()));
-            outputResult.writeLine("Mode | The most commonly reported value are");
-            outputResult.printDoubleArray(data.getMode());            
-            outputResult.writeLine("Median | Middle entry in sorted sequence");
-            outputResult.writeLine(" "+String.valueOf(data.getMedian()));
-            outputResult.writeLine("Range | Maximum subtracting Minimum");
-            outputResult.writeLine(" "+String.valueOf(data.getRange()));
-            outputResult.writeLine("Min value:");
-            outputResult.writeLine(" "+String.valueOf(data.getMin()));
-            outputResult.writeLine("Max value:");
-            outputResult.writeLine(" "+String.valueOf(data.getMax()));
-            outputResult.writeLine("Quartile 1 | Splits off the lowest 25% of data from the highest 75%");
-            outputResult.writeLine(" "+String.valueOf(data.getQ1()));
-            outputResult.writeLine("Quartile 3 | Splits off the highest 25% of data from the lowest 75%");
-            outputResult.writeLine(" "+String.valueOf(data.getQ3()));
-            outputResult.writeLine("Interquartile Range | Q3 - Q1 ");
-            outputResult.writeLine(" "+String.valueOf(data.getIqr()));
-            outputResult.writeLine("Low Interquartile Range:");
-            outputResult.writeLine(" "+String.valueOf(data.getLowIqr()));
-            outputResult.writeLine("High Interquartile Range:");
-            outputResult.writeLine(" "+String.valueOf(data.getHighIqr()));
-            outputResult.writeLine("Skewness:");
-            outputResult.writeLine(" "+String.valueOf(data.getSkewness()));
-            outputResult.writeLine("Kurtosis:");
-            outputResult.writeLine(" "+String.valueOf(data.getKurtosis()));
+            validateDataSummaryValue(data.getMapedType(), "Variable maped to:");
+            validateDataSummaryValue(data.getVarSubType(), "Variable subtype:");
+            validateDataSummaryValue(data.getMean(),"Mean | Sum of numbers divided by N");
+            validateDataSummaryValue(data.getGeometricMean(), "Geometric Mean | Nth root of product of all numbers");
+            validateDataSummaryValue(data.getMode(), "Mode | The most commonly reported value are");
+            validateDataSummaryValue(data.getMedian(), "Median | Middle entry in sorted sequence");
+            validateDataSummaryValue(data.getRange(), "Range | Maximum subtracting Minimum");
+            validateDataSummaryValue(data.getMin(),"Min value:");
+            validateDataSummaryValue(data.getMax(), "Max value:");
+            validateDataSummaryValue(data.getQ1(), "Quartile 1 | Splits off the lowest 25% of data from the highest 75%");
+            validateDataSummaryValue(data.getQ3(), "Quartile 3 | Splits off the highest 25% of data from the lowest 75%");
+            validateDataSummaryValue(data.getIqr(), "Interquartile Range | Q3 - Q1 ");
+            validateDataSummaryValue(data.getLowIqr(), "Low Interquartile Range:");
+            validateDataSummaryValue(data.getHighIqr(), "High Interquartile Range:");
+            validateDataSummaryValue(data.getSkewness(),"Skewness:");
+            validateDataSummaryValue(data.getKurtosis(),"Kurtosis:");
             outputResult.writeLine(analyseSymmetry(data.getSkewness(),data.getKurtosis()));
-            outputResult.writeLine("Standard Deviation | Spread of the data from the mean");
-            outputResult.writeLine(" "+String.valueOf(data.getStandrDev()));
+            validateDataSummaryValue(data.getStandrDev(),"Standard Deviation | Spread of the data from the mean");
             outputResult.writeLine(analyseSpread(data.getStandrDev(),data.getMinDif()));
-            outputResult.writeLine("Standar Error:");
-            outputResult.writeLine(" "+String.valueOf(data.getStandrErr()));
-            outputResult.writeLine("Low Quartile Not by lib:");
-            outputResult.writeLine(" "+String.valueOf(data.getLowQuartile()));
-            outputResult.writeLine("Mid Quartile Not by lib:");
-            outputResult.writeLine(" "+String.valueOf(data.getMidQuartile()));
-            outputResult.writeLine("Up Quartile Not by lib:");
-            outputResult.writeLine(" "+String.valueOf(data.getUpQuartile()));
-            outputResult.writeLine("Range Quartile:");
-            outputResult.writeLine(" "+String.valueOf(data.getRangeQuartile()));
-            outputResult.writeLine("Variance | Spread of data and measure of how much the values differ from mean");
-            outputResult.writeLine(" "+String.valueOf(data.getVariance()));
-            outputResult.writeLine("Pupulation Variance | Spread of data and measure of how much the values differ from mean");
-            outputResult.writeLine(" "+String.valueOf(data.getPopulationVariance()));
-            outputResult.writeLine("Coefficient Variation:");
-            outputResult.writeLine(" "+String.valueOf(data.getCoefficientVariation()));
-            outputResult.writeLine("Minimum difference between values:");
-            outputResult.writeLine(" "+String.valueOf(data.getMinDif()));
-            outputResult.writeLine("Population:");
-            outputResult.writeLine(" "+String.valueOf(data.getPopulation()));
-            outputResult.writeLine("Is this variable important to set?");
-            outputResult.writeLine(" "+String.valueOf(data.getIsEnable()));
+            validateDataSummaryValue(data.getStandrErr(),"Standar Error | Average difference between the mean and the expected value.");
+            validateDataSummaryValue(data.getLowQuartile(),"Low Quartile Not by lib:");
+            validateDataSummaryValue(data.getMidQuartile(),"Mid Quartile Not by lib:");
+            validateDataSummaryValue(data.getUpQuartile(),"Up Quartile Not by lib:");
+            validateDataSummaryValue(data.getRangeQuartile(),"Range Quartile:");
+            validateDataSummaryValue(data.getVariance(),"Variance | Spread of data and measure of how much the values differ from mean");
+            validateDataSummaryValue(data.getPopulationVariance(),"Pupulation Variance | Spread of data and measure of how much the values differ from mean");
+            validateDataSummaryValue(data.getCoefficientVariation(),"Coefficient Variation:");
+            validateDataSummaryValue(data.getMinDif(),"Minimum difference between values:");
+            validateDataSummaryValue(data.getPopulation(),"Population:");
+            validateDataSummaryValue(data.getIsEnable(),"Is this variable important to set?");
             outputResult.printBlankLine();
             outputResult.printSubSeparator();
-            outputResult.writeLine("Normilize Data:");
-            outputResult.printDoubleArray(data.getNormilizeData());
-            outputResult.writeLine("Distinct values: ");
-            outputResult.printDistinctMap(data.getDistValues());
-            if(data.getIndexOutliersList() != null){
-                outputResult.writeLine("Index of possible outliers: ");
-                outputResult.printIntegerList(data.getIndexOutliersList());
-            }
-            if(data.getNumericValues() != null){
-                outputResult.writeLine("Numeric Values: ");
-                outputResult.printDoubleList(data.getNumericValues());
-            }
-            outputResult.writeLine("Original Values: ");
-            outputResult.printStringList(data.getOriginalValues());
-            if(data.getCategoricalValue() != null){
-                outputResult.writeLine("Categorical Values: ");
-                outputResult.printStringList(data.getCategoricalValue());
-            }
-            if(data.getRemapValues() != null){
-                outputResult.writeLine("Remap Values: ");
-                outputResult.printRemapMap(data.getRemapValues());
-            }
+            validateDataSummaryValue(data.getNormilizeData(),"Normilize Data:");
+            validateDataSummaryValue(data.getDistValues(),"Distinct values:");
+            validateDataSummaryValue(data.getIndexOutliersList(),"Index of possible outliers:");
+            validateDataSummaryValue(data.getNumericValues(),"Numeric Values:");
+            validateDataSummaryValue(data.getOriginalValues(),"Original Values:");
+            validateDataSummaryValue(data.getCategoricalValue(),"Categorical Values:");
+            validateDataSummaryValue(data.getRemapValues(),"Remap Values:");
             outputResult.printSubSeparator();
         }
         catch(IOException iOE){
@@ -171,7 +195,30 @@ public class DataAnalyser {
                 System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
             }
         }
-        
+    }
+    
+    private void writeContingencySummary(ContingencyTableDef contingency){
+        try{
+            outputResult.printContingencyLabel(); 
+            outputResult.writeLine(contingency.getRowName() + " - " + contingency.getColName());
+            validateDataSummaryValue(contingency.getContingencyTable(), "Contingency Table");
+            validateDataSummaryValue(contingency.getChiSquare(), "ChiSquare:");
+            validateDataSummaryValue(contingency.getpValue(), "P Value:");
+            validateDataSummaryValue(contingency.getCramersV(), "Cramers V:");
+            validateDataSummaryValue(contingency.getTauVal(), "Tau Value:");
+            validateDataSummaryValue(contingency.isCochransCriterion(), "Cochrans Criterion:");
+        }
+        catch(IOException iOE){
+            System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
+        }
+        finally{
+            try{
+                outputResult.flushToFile();
+            }
+            catch(IOException iOE){
+                System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
+            }
+        }
     }
     
 }

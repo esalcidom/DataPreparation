@@ -61,8 +61,17 @@ public class OutputResult {
     }
     
     public void printSubSeparator() throws IOException{
-        bufferedWriter.write("------------------------------");
+        bufferedWriter.write("----------------------------------------------------");
         bufferedWriter.newLine();
+    }
+    
+    public void printContingencyLabel() throws IOException{
+        printSubSeparator();
+        printSeparator();
+        bufferedWriter.write("      CONTINGENCY TABLE       ");
+        bufferedWriter.newLine();
+        printSeparator();
+        printSubSeparator();
     }
     
     public void printBlankLine() throws IOException{
@@ -91,17 +100,9 @@ public class OutputResult {
         writeLine(line);
     }
     
-    public void printIntegerList(List<Integer> list) throws IOException{
+    public void printList(List list) throws IOException{
         String line = "";
-        for(Integer value:list){
-            line += "    " + value.toString();
-        }
-        writeLine(line);
-    }
-    
-    public void printDoubleList(List<Double> list) throws IOException{
-        String line = "";
-        for(Double value:list){
+        for(Object value:list){
             line += "    " + value.toString();
         }
         writeLine(line);
@@ -113,6 +114,19 @@ public class OutputResult {
             line += "   " + value;
         }
         writeLine(line);
+    }
+    
+    public void printDouble2DArray(double[][] array) throws IOException{
+        String line = "";
+        int row = array.length;
+        int col = array[0].length;
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++){
+                line += "   " + array[i][j];
+            }
+            writeLine(line);
+        }
+        
     }
     
 }

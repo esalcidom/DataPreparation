@@ -67,6 +67,7 @@ public class DataAnalysisProcess {
                     //tableNoNull.createKMeans(numericVariables);
                     dataAnalyser = new DataAnalyser(tableNoNull);
                     dataAnalyser.startAnalyseTable();
+                    dataAnalyser.startRelationAnalysis();
                 }
                 else{
                     System.out.println("Not enough data to analyse please check");
@@ -80,6 +81,9 @@ public class DataAnalysisProcess {
         catch(Exception e){
             System.out.println("DataAnalysisProcess | startAnalysis | Exception | " + e.getMessage());
          }
+        finally{
+            dataAnalyser.closeFile();
+        }
     }
 
     /**
