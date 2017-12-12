@@ -125,6 +125,7 @@ public class OutputResult {
                 line += "   " + array[i][j];
             }
             writeLine(line);
+            line = "";
         }
         
     }

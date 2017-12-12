@@ -217,6 +217,8 @@ public class TableData {
         for(int i=0;i<dataDefList.size();i++){
             for(int j=i+1;j<dataDefList.size();j++){
                 ContingencyTableDef contiTable = new ContingencyTableDef(dataDefList.get(i).getCategoricalValue(), dataDefList.get(j).getCategoricalValue(),dataDefList.get(i).getName().toString(),dataDefList.get(j).getName().toString());
+                contiTable.setRowMap(dataDefList.get(i).getRemapValues());
+                contiTable.setColMap(dataDefList.get(j).getRemapValues());
                 contiTable.createContingencyTable();
                 statOperator.calculateContingencySummary(contiTable);
                 contingencyTableList.add(contiTable); 

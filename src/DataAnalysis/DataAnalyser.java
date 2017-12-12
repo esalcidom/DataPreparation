@@ -13,6 +13,7 @@ import DataSet.VariableType;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  *
@@ -75,6 +76,53 @@ public class DataAnalyser {
         return line;
     }
     
+    private String analysisPValue(double pValue){
+        String line ="";
+        if(pValue>0.9)
+            line += "The P value indicates strong relation between the variables";
+        else if(pValue>0.6 && pValue<0.9)
+            line += "The P value indicates acceptable relation between the variables";
+        else if(pValue>0.4 && pValue<0.6)
+            line += "The P value indicates half relation between the variables";
+        else if(pValue>0.2 && pValue<0.4)
+            line += "The P value indicates weak relation between the variables";
+        else
+            line += "The P value indicates no relation between the variables";
+        return line;
+    }
+    
+    private String analysisCramers(double cramers){
+        String line ="";
+        if(cramers>0.9)
+            line += "The cramers v value indicates strong association between the variables";
+        else if(cramers>0.6 && cramers<0.9)
+            line += "The cramers v value indicates acceptable association between the variables";
+        else if(cramers>0.4 && cramers<0.6)
+            line += "The cramers v value indicates half association between the variables";
+        else if(cramers>0.2 && cramers<0.4)
+            line += "The cramers v value indicates weak association between the variables";
+        else
+            line += "The cramers v value indicates no association between the variables";
+        return line;
+    }
+    
+    private String analysisTau(double tau){
+        String line ="";
+        if(tau < 0)
+            tau *= -1;
+        if(tau>0.9)
+            line += "The Goodman and Kruskal's gamma value indicates strong association between the variables";
+        else if(tau>0.6 && tau<0.9)
+            line += "The Goodman and Kruskal's gamma value indicates acceptable association between the variables";
+        else if(tau>0.4 && tau<0.6)
+            line += "The Goodman and Kruskal's gamma value indicates half association between the variables";
+        else if(tau>0.2 && tau<0.4)
+            line += "The Goodman and Kruskal's gamma value indicates weak association between the variables";
+        else
+            line += "The Goodman and Kruskal's gamma value indicates no association between the variables";
+        return line;
+    }
+    
     private void validateDataSummaryValue(int value, String title) throws IOException{
         outputResult.writeLine(title);
         outputResult.writeLine(" "+value);
@@ -132,6 +180,19 @@ public class DataAnalyser {
             outputResult.writeLine(title);
             outputResult.printList(value);
         }
+    }
+    
+    private void validateDataSummaryValue(Vector value, String title) throws IOException{
+        if(value != null){
+            String line="";
+            outputResult.writeLine(title);
+            for(int i=0;i<value.size();i++){
+                line += "   " + value.get(i) + "  ";
+            }
+            outputResult.writeLine(line);
+        }
+        
+        
     }
     
     private void writeVariableSummary(DataDef data){
@@ -201,10 +262,18 @@ public class DataAnalyser {
         try{
             outputResult.printContingencyLabel(); 
             outputResult.writeLine(contingency.getRowName() + " - " + contingency.getColName());
+            outputResult.printBlankLine();
+            validateDataSummaryValue(contingency.getRowLabel(), "Rows Label");
+            validateDataSummaryValue(contingency.getRowMap(),"Rows mapped Values to Labels");
+            outputResult.printBlankLine();
+            validateDataSummaryValue(contingency.getColLabel(), "Columns Label");
+            validateDataSummaryValue(contingency.getColMap(),"Columns mapped Values to Labels");
             validateDataSummaryValue(contingency.getContingencyTable(), "Contingency Table");
             validateDataSummaryValue(contingency.getChiSquare(), "ChiSquare:");
             validateDataSummaryValue(contingency.getpValue(), "P Value:");
+            outputResult.writeLine(analysisPValue(contingency.getpValue()));
             validateDataSummaryValue(contingency.getCramersV(), "Cramers V:");
+            outputResult.writeLine(analysisCramers(contingency.getCramersV()));
             validateDataSummaryValue(contingency.getTauVal(), "Tau Value:");
             validateDataSummaryValue(contingency.isCochransCriterion(), "Cochrans Criterion:");
         }

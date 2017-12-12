@@ -1,6 +1,8 @@
 package DataSet;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 import weka.core.*;
 import jsc.contingencytables.*;
 
@@ -10,6 +12,10 @@ public class ContingencyTableDef {
     private String colName;
     private List<String> rowValues;
     private List<String> colValues;
+    private Map<String,String> rowMap;
+    private Map<String,String> colMap;
+    private Vector rowLabel;
+    private Vector colLabel;
     private double[][] contingencyTable;
     private double chiSquare;
     private double pValue;
@@ -37,6 +43,8 @@ public class ContingencyTableDef {
         if(rowValues != null && colValues != null){
             jsc.contingencytables.ContingencyTable table = new jsc.contingencytables.ContingencyTable(rowValues.toArray(new String[0]),colValues.toArray(new String[0]));
             int[][] matrix = table.getFrequencies();
+            setRowLabel(table.getRowLabels());
+            setColLabel(table.getColumnLabels());
             setContingencyTable(castIntToDoubleMatix(matrix));
         }
     }
@@ -163,6 +171,62 @@ public class ContingencyTableDef {
      */
     public void setCochransCriterion(boolean cochransCriterion) {
         this.cochransCriterion = cochransCriterion;
+    }
+
+    /**
+     * @return the rowLabel
+     */
+    public Vector getRowLabel() {
+        return rowLabel;
+    }
+
+    /**
+     * @param rowLabel the rowLabel to set
+     */
+    public void setRowLabel(Vector rowLabel) {
+        this.rowLabel = rowLabel;
+    }
+
+    /**
+     * @return the colLabel
+     */
+    public Vector getColLabel() {
+        return colLabel;
+    }
+
+    /**
+     * @param colLabel the colLabel to set
+     */
+    public void setColLabel(Vector colLabel) {
+        this.colLabel = colLabel;
+    }
+
+    /**
+     * @return the rowMap
+     */
+    public Map<String,String> getRowMap() {
+        return rowMap;
+    }
+
+    /**
+     * @param rowMap the rowMap to set
+     */
+    public void setRowMap(Map<String,String> rowMap) {
+        this.rowMap = rowMap;
+    }
+
+    /**
+     * @return the colMap
+     */
+    public Map<String,String> getColMap() {
+        return colMap;
+    }
+
+    /**
+     * @param colMap the colMap to set
+     */
+    public void setColMap(Map<String,String> colMap) {
+        this.colMap = colMap;
     }
 
 }
