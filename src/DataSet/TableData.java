@@ -34,6 +34,7 @@ public class TableData {
         pearsonCorrelationList = new ArrayList<PearsonCorrelation>();
         kendallCorrelation = new ArrayList<KendallTau>();
         simpleRegList = new ArrayList<SimpleReg>();
+        anovaList = new ArrayList<AnovaOneWay>();
     }
     
     public void setDataSetFromCSV(String[] header, List<String[]> data, int dataColumnSize) throws Exception{

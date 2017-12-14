@@ -5,8 +5,11 @@
  */
 package DataAnalysis;
 
+import DataSet.AnovaOneWay;
 import DataSet.ContingencyTableDef;
 import DataSet.DataDef;
+import DataSet.KendallTau;
+import DataSet.PearsonCorrelation;
 import DataSet.TableData;
 import DataSet.VariableSubType;
 import DataSet.VariableType;
@@ -40,6 +43,15 @@ public class DataAnalyser {
     public void startRelationAnalysis(){
         for(ContingencyTableDef entry: tableData.getContingencyTableList()){
             writeContingencySummary(entry);
+        }
+        for(PearsonCorrelation pEntry: tableData.getPearsonCorrelationList()){
+            writePCorrelationSummary(pEntry);
+        }
+        for(KendallTau kEntry: tableData.getKendallCorrelation()){
+            writeKTauSummary(kEntry);
+        }
+        for(AnovaOneWay aEntry: tableData.getAnovaList()){
+            wroteAnovaSummary(aEntry);
         }
     }
     
@@ -275,7 +287,77 @@ public class DataAnalyser {
             validateDataSummaryValue(contingency.getCramersV(), "Cramers V:");
             outputResult.writeLine(analysisCramers(contingency.getCramersV()));
             validateDataSummaryValue(contingency.getTauVal(), "Tau Value:");
+            outputResult.writeLine(analysisTau(contingency.getTauVal()));
             validateDataSummaryValue(contingency.isCochransCriterion(), "Cochrans Criterion:");
+        }
+        catch(IOException iOE){
+            System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
+        }
+        finally{
+            try{
+                outputResult.flushToFile();
+            }
+            catch(IOException iOE){
+                System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
+            }
+        }
+    }
+    
+    private void writePCorrelationSummary(PearsonCorrelation pCorrelation){
+        try{
+            outputResult.printPearsonLabel(); 
+            outputResult.writeLine(pCorrelation.getVar1Name() + " - " + pCorrelation.getVar2Name());
+            outputResult.printBlankLine();
+            //validateDataSummaryValue(pCorrelation.getMatrix(),"Correlation Matrix");
+            validateDataSummaryValue(pCorrelation.getCorrelation(),"Correlation value");
+            //validateDataSummaryValue(pCorrelation.getCorrelationPValues().getData(), "Correlation P values matrix");
+            //validateDataSummaryValue(pCorrelation.getCorrealationStandarError().getData(), "Standar Error Matrix");
+        }
+        catch(IOException iOE){
+            System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
+        }
+        finally{
+            try{
+                outputResult.flushToFile();
+            }
+            catch(IOException iOE){
+                System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
+            }
+        }
+    }
+    
+    private void writeKTauSummary(KendallTau kTau){
+        try{
+            outputResult.printKTauLabel(); 
+            outputResult.writeLine(kTau.getVar1Name() + " - " + kTau.getVar2Name());
+            outputResult.printBlankLine();
+            //validateDataSummaryValue(kTau.getMatrix(),"Correlation Matrix");
+            validateDataSummaryValue(kTau.getCorrelation(),"Correlation value");
+            //validateDataSummaryValue(pCorrelation.getCorrelationPValues().getData(), "Correlation P values matrix");
+            //validateDataSummaryValue(pCorrelation.getCorrealationStandarError().getData(), "Standar Error Matrix");
+        }
+        catch(IOException iOE){
+            System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
+        }
+        finally{
+            try{
+                outputResult.flushToFile();
+            }
+            catch(IOException iOE){
+                System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
+            }
+        }
+    }
+    
+    private void wroteAnovaSummary(AnovaOneWay aOne){
+        try{
+            outputResult.printAnovaLabel(); 
+            outputResult.writeLine(aOne.getVar1Name() + " - " + aOne.getVar2Name());
+            outputResult.printBlankLine();
+            validateDataSummaryValue(aOne.getfValue(),"Anova F Value");
+            validateDataSummaryValue(aOne.getpValue(),"Anova P Value");
+            validateDataSummaryValue(aOne.isIsTestAlpha(),"Anova Test Alpha");
+            
         }
         catch(IOException iOE){
             System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());

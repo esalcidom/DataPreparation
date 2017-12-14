@@ -74,6 +74,33 @@ public class OutputResult {
         printSubSeparator();
     }
     
+    public void printPearsonLabel() throws IOException{
+        printSubSeparator();
+        printSeparator();
+        bufferedWriter.write("      Pearson Correlation Matrix       ");
+        bufferedWriter.newLine();
+        printSeparator();
+        printSubSeparator();
+    }
+    
+    public void printKTauLabel() throws IOException{
+        printSubSeparator();
+        printSeparator();
+        bufferedWriter.write("      Kendall Tau Correlation Matrix       ");
+        bufferedWriter.newLine();
+        printSeparator();
+        printSubSeparator();
+    }
+    
+    public void printAnovaLabel() throws IOException{
+        printSubSeparator();
+        printSeparator();
+        bufferedWriter.write("      Anova One Way       ");
+        bufferedWriter.newLine();
+        printSeparator();
+        printSubSeparator();
+    }
+    
     public void printBlankLine() throws IOException{
         bufferedWriter.newLine();
     }

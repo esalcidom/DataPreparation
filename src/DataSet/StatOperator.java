@@ -55,7 +55,7 @@ public class StatOperator {
         org.apache.commons.math3.stat.correlation.PearsonsCorrelation pearC = new org.apache.commons.math3.stat.correlation.PearsonsCorrelation(pearsonC.getMatrix());
         pearsonC.setCorrelationMatrix(pearC.getCorrelationMatrix());
         pearsonC.setCorrelation(pearC.correlation(DefOperator.generateArrayDouble(pearsonC.getVar1Values()),DefOperator.generateArrayDouble(pearsonC.getVar2Values())));
-        pearsonC.setCorrelationPValues(pearC.getCorrelationPValues());
+        //pearsonC.setCorrelationPValues(pearC.getCorrelationPValues());
         pearsonC.setCorrealationStandarError(pearC.getCorrelationStandardErrors());
     }
     
