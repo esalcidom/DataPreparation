@@ -61,10 +61,8 @@ public class DataAnalysisProcess {
                     //NOTE create pearson correlation and KendallTau take a lot of time
                     System.out.println("Create Pearson correlation...");
                     tableNoNull.createPearsonCorrelation(numericVariables);
-                    System.out.println("Create Kendal Tau test...");
-                    tableNoNull.createKendallTau(numericVariables);
-                    //Cannot implement Clustering
-                    //tableNoNull.createKMeans(numericVariables);
+                    System.out.println("Create Simple Regression...");
+                    tableNoNull.createSimpleReg();
                     System.out.println("Create Anova test...");
                     tableNoNull.createAnova(numericVariables);
                     dataAnalyser = new DataAnalyser(tableNoNull);

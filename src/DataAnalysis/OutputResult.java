@@ -101,6 +101,15 @@ public class OutputResult {
         printSubSeparator();
     }
     
+    public void printSimpleRegLabel() throws IOException{
+        printSubSeparator();
+        printSeparator();
+        bufferedWriter.write("      Simple Regression       ");
+        bufferedWriter.newLine();
+        printSeparator();
+        printSubSeparator();
+    }
+    
     public void printBlankLine() throws IOException{
         bufferedWriter.newLine();
     }
@@ -108,7 +117,7 @@ public class OutputResult {
     public void printDistinctMap(Map<String,Integer> map) throws IOException{
         String line = "";
         for(Map.Entry<String, Integer> entry : map.entrySet()){
-            line += "   |   " + entry.getKey() + " -> " + entry.getValue() + "  |   ";
+            line += entry.getKey() + " -> " + entry.getValue() + "\n";
         }
         writeLine(line);
     }

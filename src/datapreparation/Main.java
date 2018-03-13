@@ -27,9 +27,6 @@
         * * 9. Create Contingency tables for all variables that contains categorical values
         * 10. Calculate Lineal regression
         * 11. Calculate ANOVA
-        * ///////NOTE: NEED TO CHECK HOW TO HANDLE STRING VARIABLES TO CATEGORY VARIABLES
-        * 12. Clostering k-Means
-        * 13. Detect variable distribution???????
  */
 package datapreparation;
 /**

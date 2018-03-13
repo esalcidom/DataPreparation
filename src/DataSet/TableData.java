@@ -278,12 +278,21 @@ public class TableData {
         }
     }
     
-    public void createSimpleReg(List<DataDef> dataDefList){
-        for(int i=0;i<dataDefList.size();i++){
-            for(int j=i+1;j<dataDefList.size();j++){
-                SimpleReg simpleReg = new SimpleReg(dataDefList.get(i),dataDefList.get(j));
+    public void createSimpleReg(){
+        Collection<DataDef> entry = defMap.values();
+        DataDef[] array = entry.toArray(new DataDef[entry.size()]);
+        for(int i=0;i<entry.size();i++){
+            if(!array[i].getIsEnable())
+                continue;
+            for(int j=i+1;j<entry.size();j++){
+                if(!array[j].getIsEnable())
+                    continue;
+                SimpleReg simpleReg = new SimpleReg(array[i],array[j]);
                 statOperator.calculateSimpleRegressionSummary(simpleReg);
                 simpleRegList.add(simpleReg);
+                SimpleReg simpleRegInverted = new SimpleReg(array[j], array[i]);
+                statOperator.calculateSimpleRegressionSummary(simpleRegInverted);
+                simpleRegList.add(simpleRegInverted);   
             }
         }
     }

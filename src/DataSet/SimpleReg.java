@@ -20,15 +20,15 @@ public class SimpleReg {
     private double rPearsonCorrelation;
     private double regressionSumSquares;
     private double rSquare;
-    private double significance;
-    private double slope;
+    private double significance; // determine if a regression model can be applied to a observed data
+    private double slope; //The beta or asociated with the X
     private double slopeConfidenceInterval;
     private double slopeStErr;
     private double sumCrossProducts;
     private double sumSquareErr;
     private double totalSumSquares;
     private double xSumSquares;
-    private double intercept;
+    private double intercept; //The alpha or initial value of the ecuation
     private double interceptStErr;
     private double meanSquareErr;
     
@@ -43,8 +43,14 @@ public class SimpleReg {
         createMatrix();
     }
     public SimpleReg(DataDef var1, DataDef var2){
-        var1Values = var1.getNumericValues();
-        var2Values = var2.getNumericValues();
+        if(var1.getVarSubType().equals(VariableSubType.NUMERIC))
+            var1Values = DefOperator.generateStringListToDouble(var1.getOriginalValues());
+        else
+            var1Values = var1.getNumericValues();
+        if(var2.getVarSubType().equals(VariableSubType.NUMERIC))
+            var2Values = DefOperator.generateStringListToDouble(var2.getOriginalValues());
+        else
+            var2Values = var2.getNumericValues();
         var1Name = var1.getName().toString();
         var2Name = var2.getName().toString();
         createMatrix();

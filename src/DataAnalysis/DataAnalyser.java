@@ -10,6 +10,7 @@ import DataSet.ContingencyTableDef;
 import DataSet.DataDef;
 import DataSet.KendallTau;
 import DataSet.PearsonCorrelation;
+import DataSet.SimpleReg;
 import DataSet.TableData;
 import DataSet.VariableSubType;
 import DataSet.VariableType;
@@ -51,7 +52,10 @@ public class DataAnalyser {
             writeKTauSummary(kEntry);
         }
         for(AnovaOneWay aEntry: tableData.getAnovaList()){
-            wroteAnovaSummary(aEntry);
+            writeAnovaSummary(aEntry);
+        }
+        for(SimpleReg sEntry: tableData.getSimpleRegList()){
+            writeSimpleRegressionSummary(sEntry);
         }
     }
     
@@ -132,6 +136,23 @@ public class DataAnalyser {
             line += "The Goodman and Kruskal's gamma value indicates weak association between the variables";
         else
             line += "The Goodman and Kruskal's gamma value indicates no association between the variables";
+        return line;
+    }
+    
+    private String analysisCorrelation(double pValue){
+        String line ="";
+        if(pValue>-0.3 || pValue<0.3)
+            line += "The correlation between the variables indicates no lineal relation";
+        else if(pValue>-0.7 && pValue<-0.3 || pValue>0.3 && pValue<0.7)
+            line += "The correlation between the variables indicates medium lineal relation";
+        else if(pValue>=-1 && pValue<-0.7 || pValue>0.7 && pValue<=1)
+            line += "The correlation between the variables indicates lineal relation";
+        return line;
+    }
+    
+    private String printEcuation(SimpleReg sReg){
+        String line = "";
+        line += "Y = " + sReg.getIntercept() + " + " + sReg.getSlope() + " * X "; 
         return line;
     }
     
@@ -248,11 +269,11 @@ public class DataAnalyser {
             validateDataSummaryValue(data.getIsEnable(),"Is this variable important to set?");
             outputResult.printBlankLine();
             outputResult.printSubSeparator();
-            validateDataSummaryValue(data.getNormilizeData(),"Normilize Data:");
+            validateDataSummaryValue(data.getOriginalValues(),"Clean Original Values:");
             validateDataSummaryValue(data.getDistValues(),"Distinct values:");
+            validateDataSummaryValue(data.getNormilizeData(),"Normilize Data:");
             validateDataSummaryValue(data.getIndexOutliersList(),"Index of possible outliers:");
             validateDataSummaryValue(data.getNumericValues(),"Numeric Values:");
-            validateDataSummaryValue(data.getOriginalValues(),"Original Values:");
             validateDataSummaryValue(data.getCategoricalValue(),"Categorical Values:");
             validateDataSummaryValue(data.getRemapValues(),"Remap Values:");
             outputResult.printSubSeparator();
@@ -310,6 +331,7 @@ public class DataAnalyser {
             outputResult.printBlankLine();
             //validateDataSummaryValue(pCorrelation.getMatrix(),"Correlation Matrix");
             validateDataSummaryValue(pCorrelation.getCorrelation(),"Correlation value");
+            outputResult.writeLine(analysisCorrelation(pCorrelation.getCorrelation()));
             //validateDataSummaryValue(pCorrelation.getCorrelationPValues().getData(), "Correlation P values matrix");
             //validateDataSummaryValue(pCorrelation.getCorrealationStandarError().getData(), "Standar Error Matrix");
         }
@@ -349,7 +371,7 @@ public class DataAnalyser {
         }
     }
     
-    private void wroteAnovaSummary(AnovaOneWay aOne){
+    private void writeAnovaSummary(AnovaOneWay aOne){
         try{
             outputResult.printAnovaLabel(); 
             outputResult.writeLine(aOne.getVar1Name() + " - " + aOne.getVar2Name());
@@ -358,6 +380,36 @@ public class DataAnalyser {
             validateDataSummaryValue(aOne.getpValue(),"Anova P Value");
             validateDataSummaryValue(aOne.isIsTestAlpha(),"Anova Test Alpha");
             
+        }
+        catch(IOException iOE){
+            System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
+        }
+        finally{
+            try{
+                outputResult.flushToFile();
+            }
+            catch(IOException iOE){
+                System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
+            }
+        }
+    }
+    
+    private void writeSimpleRegressionSummary(SimpleReg sReg){
+        try{
+            outputResult.printSimpleRegLabel(); 
+            outputResult.writeLine(sReg.getVar1Name() + " - " + sReg.getVar2Name());
+            outputResult.printBlankLine();
+            validateDataSummaryValue(sReg.getrPearsonCorrelation(),"Pearson Correlation r Value");
+            validateDataSummaryValue(sReg.getRegressionSumSquares(),"Regression Sum Squares");
+            validateDataSummaryValue(sReg.getrSquare(),"R Square");
+            validateDataSummaryValue(sReg.getSignificance(),"Signi");
+            validateDataSummaryValue(sReg.getSignificance(), "Significance | Determine if a regression model can be applied to a observed data ");
+            validateDataSummaryValue(sReg.getSumCrossProducts(), "Sum Cross Products");
+            validateDataSummaryValue(sReg.getTotalSumSquares(), "Total Sum Squares");
+            validateDataSummaryValue(sReg.getxSumSquares(), "X sum Squares");
+            outputResult.printBlankLine();
+            outputResult.writeLine("Simple regression model");
+            outputResult.writeLine(printEcuation(sReg));
         }
         catch(IOException iOE){
             System.out.println("DataAnalyser | IOException | File not found " + iOE.getMessage());
